@@ -1,0 +1,46 @@
+<!-- ClonFlixApp/templates/usuarios/registro.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Usuario</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
+    <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-center text-3xl font-bold mb-6">Registro de Usuario</h2>
+
+      <!-- Mostrar solo mensajes relacionados con el registro -->
+{% if messages %}
+    {% for message in messages %}
+        {% if "registro" in message.tags or "error" in message.tags %}
+            <div class="p-4 mb-4 text-sm rounded {% if 'error' in message.tags %}bg-red-500 text-white{% else %}bg-green-500 text-white{% endif %}">
+                {{ message }}
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+        <form action="{% url 'registro' %}" method="post" class="space-y-5">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Nombre de usuario" class="block w-full p-3 bg-gray-700 text-white rounded" required>
+            <input type="email" name="email" placeholder="Correo Electrónico" class="block w-full p-3 bg-gray-700 text-white rounded" required>
+            <input type="password" name="password" placeholder="Contraseña" class="block w-full p-3 bg-gray-700 text-white rounded" required>
+            <button type="submit" class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Registrarse</button>
+        </form>
+
+        <!-- Enlace a la página de inicio de sesión -->
+        <div class="text-center mt-4">
+            <p>¿Ya tienes una cuenta?
+                <a href="{% url 'login' %}" class="text-blue-400 hover:underline">Inicia sesión aquí</a>
+            </p>
+        </div>
+        <!-- Botón Volver a ClonFlix -->
+        <div class="text-center mt-8">
+            <a href="{% url 'index' %}" class="text-blue-400 hover:underline">Volver a ClonFlix</a>
+        </div>
+    </div>
+</body>
+</html>
+
+

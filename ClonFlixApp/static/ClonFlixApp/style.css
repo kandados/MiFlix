@@ -1,0 +1,74 @@
+/* Contenedor Principal para Tarjetas y Botones */
+.film-card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Imagen de la tarjeta con superposición */
+.film-card .h-64 {
+    position: relative;
+    height: 340px; /* Aumenta la altura de la imagen */
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 8px;
+}
+
+/* Título superpuesto sobre la imagen */
+.movie-title-overlay {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 0.5rem;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+    box-sizing: border-box;
+}
+
+/* Contenedor de la tarjeta */
+.film-card {
+    background-color: #1f1f1f;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    width: 220px; /* Aumenta el ancho de la tarjeta */
+    max-width: 100%;
+}
+
+.film-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Contenedor de botones de interacción fuera de la tarjeta */
+.interaction-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 220px; /* Alinea los botones con el nuevo ancho de la tarjeta */
+    align-items: center;
+}
+
+/* Estilo de los botones */
+.interaction-button {
+    background-color: #4a90e2;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%; /* Alinea el ancho de los botones con el contenedor */
+    text-align: center;
+}
+
+.interaction-button:hover {
+    background-color: #357ab8;
+}

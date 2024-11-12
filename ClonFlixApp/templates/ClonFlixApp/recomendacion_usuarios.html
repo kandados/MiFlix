@@ -1,0 +1,21 @@
+<!-- ClonFlixApp/templates/ClonFlixApp/recomendacion_usuarios.html -->
+{% extends "ClonFlixApp/base.html" %}
+
+{% block content %}
+<section class="py-8 px-4">
+    <h2 class="text-3xl font-bold mb-4">Recomendación de Usuarios</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {% for pelicula in recomendaciones %}
+            <a href="{% url 'detalle_pelicula' pelicula.id %}" class="film-card block rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 relative">
+                <!-- Imagen de la película como fondo -->
+                <div class="h-64 bg-cover bg-center" style="background-image: url('{{ pelicula.image_cover.url }}');">
+                    <!-- Gradiente oscuro y título dentro de la imagen -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent flex items-end p-4">
+                        <h3 class="movie-title text-xl font-bold text-white">{{ pelicula.titulo }}</h3>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

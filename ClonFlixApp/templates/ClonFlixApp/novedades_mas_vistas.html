@@ -1,0 +1,20 @@
+{% extends "ClonFlixApp/base.html" %}
+
+{% block content %}
+<section class="py-8 px-4">
+    <h2 class="text-3xl font-bold mb-4 text-center">Novedades Más Vistas</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {% for pelicula in novedades %}
+            <div class="film-card">
+                <a href="{% url 'detalle_pelicula' pelicula.id %}">
+                    <div class="h-64 bg-cover bg-center relative" style="background-image: url('{{ pelicula.image_cover.url }}');">
+                        <div class="absolute inset-0 flex items-end justify-center p-4">
+                            <h3 class="movie-title-overlay text-white font-semibold">{{ pelicula.titulo }}</h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

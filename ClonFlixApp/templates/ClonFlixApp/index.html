@@ -1,0 +1,56 @@
+{% extends 'ClonFlixApp/base.html' %}
+
+{% block title %}Inicio | ClonFlix{% endblock %}
+
+{% block content %}
+<section class="py-8 text-center">
+    <h1 class="text-4xl font-bold mb-4">ClonFlix</h1>
+    <p class="text-lg">Plataforma de contenidos audiovisuales.</p>
+</section>
+
+<section class="py-8 px-4">
+    <h2 class="text-3xl font-bold mb-4">Películas Recientes</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 films-container">
+        {% for movie in peliculas_recientes %}
+            <div class="film-card-container">
+                <div class="film-card">
+                    <a href="{% url 'detalle_pelicula' movie.id %}">
+                        <!-- Verifica si movie.image_cover está disponible -->
+                        {% if movie.image_cover %}
+                            <div class="h-64 bg-cover bg-center" style="background-image: url('{{ movie.image_cover.url }}');">
+                        {% else %}
+                            <!-- Si no, usa la imagen predeterminada -->
+                            <div class="h-64 bg-cover bg-center" style="background-image: url('{% static 'ClonFlixApp/images/default_image.jpg' %}');">
+                        {% endif %}
+                            <h3 class="movie-title-overlay">{{ movie.titulo }}</h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="py-8 px-4">
+    <h2 class="text-3xl font-bold mb-4">Series Recientes</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 films-container">
+        {% for serie in series_recientes %}
+            <div class="film-card-container">
+                <div class="film-card">
+                    <a href="{% url 'detalle_serie' serie.id %}">
+                        <!-- Verifica si serie.image_cover está disponible -->
+                        {% if serie.image_cover %}
+                            <div class="h-64 bg-cover bg-center" style="background-image: url('{{ serie.image_cover.url }}');">
+                        {% else %}
+                            <!-- Si no, usa la imagen predeterminada -->
+                            <div class="h-64 bg-cover bg-center" style="background-image: url('{% static 'ClonFlixApp/images/default_image.jpg' %}');">
+                        {% endif %}
+                            <h3 class="movie-title-overlay">{{ serie.titulo }}</h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

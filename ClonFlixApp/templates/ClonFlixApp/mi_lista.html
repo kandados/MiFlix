@@ -1,0 +1,20 @@
+{% extends "ClonFlixApp/base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="py-8 px-4">
+    <h2 class="text-3xl font-bold mb-4">Mi Lista</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {% for item in mi_lista %}
+            <div class="film-card-container">
+                <a href="{% url 'detalle_pelicula' item.id %}" class="block rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 relative">
+                    <div class="h-64 bg-cover bg-center"
+                         style="background-image: url('{% if item.image_cover %}{{ item.image_cover.url }}{% else %}{% static 'ClonFlixApp/default.jpg' %}{% endif %}');">
+                    </div>
+                    <h3 class="movie-title-overlay">{{ item.titulo }}</h3>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

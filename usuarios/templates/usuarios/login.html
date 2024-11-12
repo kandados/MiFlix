@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
+    <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-center text-3xl font-bold mb-6">Iniciar Sesión</h2>
+        <form action="{% url 'login' %}" method="post" class="space-y-5">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Nombre de usuario" class="block w-full p-3 bg-gray-700 text-white rounded" required>
+            <input type="password" name="password" placeholder="Contraseña" class="block w-full p-3 bg-gray-700 text-white rounded" required>
+            <button type="submit" class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Entrar</button>
+        </form>
+
+        <!-- Enlace a la página de registro -->
+        <div class="text-center mt-4">
+            <p>¿No estás registrado?
+                <a href="{% url 'registro' %}" class="text-blue-400 hover:underline">Regístrate aquí</a>
+            </p>
+        </div>
+
+        <!-- Botón Volver a ClonFlix -->
+        <div class="text-center mt-8">
+            <a href="{% url 'index' %}" class="text-blue-400 hover:underline">Volver a ClonFlix</a>
+        </div>
+    </div>
+</body>
+</html>
+
+

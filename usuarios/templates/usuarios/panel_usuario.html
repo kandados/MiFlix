@@ -1,0 +1,24 @@
+{% extends 'clonflixapp/base.html' %}
+
+{% block content %}
+<div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md mx-auto mt-10">
+    <h2 class="text-center text-3xl font-bold mb-6">Panel de Usuario</h2>
+    <p class="text-center mb-6">Bienvenido, {{ user.username }}. Este es tu panel personal. Aquí puedes gestionar tus favoritos, ver tu historial y explorar contenido.</p>
+
+    <!-- Secciones de acceso rápido -->
+    <div class="space-y-5">
+        <div class="bg-gray-700 p-4 rounded-lg">
+            <h3 class="text-xl font-semibold mb-2">Mis Favoritos</h3>
+            <p><a href="{% url 'favoritos' %}" class="text-blue-400 hover:underline">Ver y gestionar tus películas favoritas</a></p>
+        </div>
+        <div class="bg-gray-700 p-4 rounded-lg">
+            <h3 class="text-xl font-semibold mb-2">Historial de Visualización</h3>
+            <p><a href="{% url 'historial' %}" class="text-blue-400 hover:underline">Revisar el historial de contenido visto</a></p>
+        </div>
+        <div class="bg-gray-700 p-4 rounded-lg">
+            <h3 class="text-xl font-semibold mb-2">Explorar Contenido</h3>
+            <p><a href="{% url 'explorar' %}" class="text-blue-400 hover:underline">Descubre nuevas películas y series</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

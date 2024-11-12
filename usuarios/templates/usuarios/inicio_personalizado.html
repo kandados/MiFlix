@@ -1,0 +1,62 @@
+{% extends 'clonflixapp/base.html' %}
+
+{% block content %}
+<div class="container mx-auto mt-10">
+    <h2 class="text-3xl font-bold mb-6">Bienvenido, {{ user.username }}</h2>
+    <p>Explora todo el contenido disponible y marca tus favoritos o lo que ya has visto.</p>
+
+    <!-- Sección de Películas Recientes -->
+    <div class="mb-8">
+        <h3 class="text-2xl font-bold mb-4">Películas Recientes</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {% for pelicula in peliculas_recientes %}
+                <div class="bg-gray-700 p-4 rounded-lg text-center">
+                    <h4 class="text-lg font-semibold">{{ pelicula.titulo }}</h4>
+                    <p>{{ pelicula.descripcion|truncatewords:10 }}</p>
+
+                    <!-- Botones de Interacción -->
+                    <form action="{% url 'marcar_favorito' pelicula.id %}" method="post" class="mt-2 inline">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
+                            {% if pelicula.id in favoritos_ids %}Quitar de Favoritos{% else %}Marcar como Favorito{% endif %}
+                        </button>
+                    </form>
+                    <form action="{% url 'marcar_visto' pelicula.id %}" method="post" class="mt-2 inline">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">
+                            {% if pelicula.id in visto_ids %}Marcar como No Visto{% else %}Marcar como Visto{% endif %}
+                        </button>
+                    </form>
+                    <form action="{% url 'marcar_ver_mas_tarde' pelicula.id %}" method="post" class="mt-2 inline">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">
+                            {% if pelicula.id in ver_mas_tarde_ids %}Quitar de Ver Más Tarde{% else %}Ver Más Tarde{% endif %}
+                        </button>
+                    </form>
+                    <!-- Botón de Puntuación -->
+                    <form action="{% url 'puntuar_contenido' pelicula.id %}" method="post" class="mt-2 inline">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded">Puntuar</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Sección de Series Recientes -->
+    <div class="mb-8">
+        <h3 class="text-2xl font-bold mb-4">Series Recientes</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {% for serie in series_recientes %}
+                <div class="bg-gray-700 p-4 rounded-lg text-center">
+                    <h4 class="text-lg font-semibold">{{ serie.titulo }}</h4>
+                    <p>{{ serie.descripcion|truncatewords:10 }}</p>
+
+                    <!-- Botones de Interacción (Igual que en Películas) -->
+                    <!-- Repetir los mismos botones que en la sección de películas -->
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

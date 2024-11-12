@@ -1,0 +1,69 @@
+{% extends "ClonFlixApp/base.html" %}
+
+{% block content %}
+<section class="py-8 px-4">
+    <!-- Botón de Volver centrado -->
+    <div class="flex justify-center mb-4">
+        <button onclick="history.back()" class="bg-gray-700 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded">
+            Volver
+        </button>
+    </div>
+
+    <div class="max-w-4xl mx-auto bg-gray-800 text-white rounded-lg p-6 flex flex-col md:flex-row gap-6">
+        <!-- Imagen de la película -->
+        <div class="flex-shrink-0">
+            {% if contenido.image_cover %}
+                <img src="{{ contenido.image_cover.url }}" alt="{{ contenido.titulo }}" class="w-full md:w-80 h-auto rounded-lg">
+            {% else %}
+                <img src="{% static 'path/to/default_image.jpg' %}" alt="Imagen no disponible" class="w-full md:w-80 h-auto rounded-lg">
+            {% endif %}
+        </div>
+
+        <!-- Contenedor de información -->
+        <div class="flex-grow">
+            <h1 class="text-4xl font-bold mb-4">{{ contenido.titulo }}</h1>
+
+            <!-- Sinopsis -->
+            <div class="mb-6">
+                <h2 class="text-2xl font-semibold mb-2">Sinopsis</h2>
+                <p>{{ contenido.sinopsis }}</p>
+            </div>
+
+            <!-- Detalles de la película -->
+            <div>
+                <h2 class="text-2xl font-semibold mb-2">Detalles</h2>
+                <p><strong>Género:</strong> {{ contenido.get_genero_display }}</p>
+                <p><strong>Duración:</strong> {{ contenido.duracion }} minutos</p>
+                <p><strong>Director:</strong> {{ contenido.director }}</p>
+                <p><strong>Actores Principales:</strong> {{ contenido.protagonistas }}</p>
+                <p><strong>Año de estreno:</strong> {{ contenido.estreno }}</p>
+                <p><strong>Calificación de Usuario:</strong> {{ contenido.calificacion_usuario }} / 5</p>
+                <p><strong>Vistas Totales:</strong> {{ contenido.vistas_totales }}</p>
+            </div>
+
+            {% if user.is_authenticated %}
+                <div class="mt-6 flex gap-4">
+                    <form action="{% url 'marcar_favorito' id=contenido.id %}" method="post" class="inline-block">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            {% if contenido.id in favoritos_ids %}Quitar de Favoritos{% else %}Favorito{% endif %}
+                        </button>
+                    </form>
+                    <form action="{% url 'marcar_visto' id=contenido.id %}" method="post" class="inline-block">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            {% if contenido.id in visto_ids %}No Visto{% else %}Visto{% endif %}
+                        </button>
+                    </form>
+                    <form action="{% url 'marcar_ver_mas_tarde' contenido_id=contenido.id %}" method="post" class="inline-block">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            {% if contenido.id in ver_mas_tarde_ids %}Quitar de Mi Lista{% else %}Añadir a Mi Lista{% endif %}
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

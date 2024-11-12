@@ -1,0 +1,23 @@
+<!-- ClonFlixApp/templates/ClonFlixApp/buscar_peliculas.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultados de búsqueda para "{{ query }}"</title>
+</head>
+<body>
+    <h1>Resultados para "{{ query }}"</h1>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {% for movie in peliculas %}
+            <div class="relative film-card" style="background-image: url('{{ movie.image_card.url }}'); background-size: cover; background-position: center;">
+                <a href="{% url 'detalle_pelicula' movie.id %}" class="absolute inset-0 flex items-end p-4 bg-black bg-opacity-50 hover:bg-opacity-75">
+                    <h3 class="text-xl font-bold">{{ movie.title }}</h3>
+                </a>
+            </div>
+        {% empty %}
+            <p>No se encontraron resultados para "{{ query }}".</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
