@@ -15,15 +15,11 @@
             <div class="film-card-container">
                 <div class="film-card">
                     <a href="{% url 'detalle_pelicula' movie.id %}">
-                        <!-- Verifica si movie.image_cover está disponible -->
                         {% if movie.image_cover %}
                             <div class="h-64 bg-cover bg-center" style="background-image: url('{{ movie.image_cover.url }}');">
-                        {% else %}
-                            <!-- Si no, usa la imagen predeterminada -->
-                            <div class="h-64 bg-cover bg-center" style="background-image: url('{% static 'ClonFlixApp/images/default_image.jpg' %}');">
+                                <h3 class="movie-title-overlay">{{ movie.titulo }}</h3>
+                            </div>
                         {% endif %}
-                            <h3 class="movie-title-overlay">{{ movie.titulo }}</h3>
-                        </div>
                     </a>
                 </div>
             </div>
@@ -38,15 +34,11 @@
             <div class="film-card-container">
                 <div class="film-card">
                     <a href="{% url 'detalle_serie' serie.id %}">
-                        <!-- Verifica si serie.image_cover está disponible -->
                         {% if serie.image_cover %}
                             <div class="h-64 bg-cover bg-center" style="background-image: url('{{ serie.image_cover.url }}');">
-                        {% else %}
-                            <!-- Si no, usa la imagen predeterminada -->
-                            <div class="h-64 bg-cover bg-center" style="background-image: url('{% static 'ClonFlixApp/images/default_image.jpg' %}');">
+                                <h3 class="movie-title-overlay">{{ serie.titulo }}</h3>
+                            </div>
                         {% endif %}
-                            <h3 class="movie-title-overlay">{{ serie.titulo }}</h3>
-                        </div>
                     </a>
                 </div>
             </div>
