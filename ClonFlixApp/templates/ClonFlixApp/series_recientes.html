@@ -1,13 +1,28 @@
 <!-- ClonFlixApp/templates/ClonFlixApp/series_recientes.html -->
-<div class="series-recientes">
-    <h2 class="text-2xl font-bold mb-4">Series Recientes</h2>
+{% extends "ClonFlixApp/base.html" %}
+
+{% block title %}Series Recientes{% endblock %}
+
+{% block content %}
+<section class="py-8 px-4">
+    <h2 class="text-3xl font-bold mb-4">Series Recientes</h2>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         {% for serie in series %}
-            <div class="serie-card bg-gray-800 rounded-lg p-4">
-                <h3 class="text-xl font-semibold">{{ serie.titulo }}</h3>
-                <p>{{ serie.genero }}</p>
-                <span class="text-gray-400">{{ serie.fecha_publicacion }}</span>
-            </div>
+            <a href="{% url 'detalle_serie' serie.id %}" class="serie-card block rounded-lg overflow-hidden bg-gray-800 hover:bg-gray-700 transition duration-300">
+                <!-- Imagen de la serie -->
+                <div class="h-64 bg-cover bg-center"
+                     style="background-image: url('{% if serie.image_cover %}{{ serie.image_cover.url }}{% else %}{% static 'ClonFlixApp/images/default_image.jpg' %}{% endif %}');">
+                </div>
+                <!-- Información de la serie -->
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold text-white mb-2">{{ serie.titulo }}</h3>
+                    <p class="text-sm text-gray-400 mb-1"><strong>Género:</strong> {{ serie.genero }}</p>
+                    <p class="text-sm text-gray-400"><strong>Estreno:</strong> {{ serie.estreno }}</p>
+                </div>
+            </a>
+        {% empty %}
+            <p class="text-gray-500">No hay series recientes disponibles en este momento.</p>
         {% endfor %}
     </div>
-</div>
+</section>
+{% endblock %}

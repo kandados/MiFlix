@@ -1,19 +1,50 @@
-{% extends "ClonFlixApp/base.html" %}
-{% load static %}
+{% extends 'ClonFlixApp/base.html' %}
+
+{% block title %}Novedades Más Vistas | ClonFlix{% endblock %}
+
 {% block content %}
 <section class="py-8 px-4">
-    <h2 class="text-3xl font-bold mb-4 text-center">Novedades Más Vistas</h2>
+    <h2 class="text-3xl font-bold mb-4">Novedades Más Vistas</h2>
+
+    <h3 class="text-2xl font-bold mb-4">Películas</h3>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {% for pelicula in novedades %}
-            <div class="film-card">
-                <a href="{% url 'detalle_pelicula' pelicula.id %}">
-                    <div class="h-64 bg-cover bg-center relative" style="background-image: url('{{ pelicula.image_cover.url }}');">
-                        <div class="absolute inset-0 flex items-end justify-center p-4">
-                            <h3 class="movie-title-overlay text-white font-semibold">{{ pelicula.titulo }}</h3>
-                        </div>
+        {% for pelicula in novedades_peliculas %}
+            <a href="{% url 'ClonFlixApp:detalle_pelicula' pelicula.id %}" class="film-card block rounded-lg overflow-hidden shadow-lg">
+                {% if pelicula.image_cover %}
+                    <div class="h-64 bg-cover bg-center" style="background-image: url('{{ pelicula.image_cover.url }}');"></div>
+                {% else %}
+                    <div class="h-64 bg-gray-400 flex items-center justify-center">
+                        <span class="text-gray-700">Sin imagen</span>
                     </div>
-                </a>
-            </div>
+                {% endif %}
+                <div class="p-4">
+                    <h4 class="text-lg font-semibold">{{ pelicula.titulo }}</h4>
+                    <p class="text-sm text-gray-500">{{ pelicula.genero }}</p>
+                </div>
+            </a>
+        {% empty %}
+            <p class="text-gray-500">No hay películas destacadas disponibles.</p>
+        {% endfor %}
+    </div>
+
+    <h3 class="text-2xl font-bold mb-4 mt-8">Series</h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {% for serie in novedades_series %}
+            <a href="{% url 'ClonFlixApp:detalle_serie' serie.id %}" class="film-card block rounded-lg overflow-hidden shadow-lg">
+                {% if serie.image_cover %}
+                    <div class="h-64 bg-cover bg-center" style="background-image: url('{{ serie.image_cover.url }}');"></div>
+                {% else %}
+                    <div class="h-64 bg-gray-400 flex items-center justify-center">
+                        <span class="text-gray-700">Sin imagen</span>
+                    </div>
+                {% endif %}
+                <div class="p-4">
+                    <h4 class="text-lg font-semibold">{{ serie.titulo }}</h4>
+                    <p class="text-sm text-gray-500">{{ serie.genero }}</p>
+                </div>
+            </a>
+        {% empty %}
+            <p class="text-gray-500">No hay series destacadas disponibles.</p>
         {% endfor %}
     </div>
 </section>

@@ -1,0 +1,7 @@
+<!-- calificar_contenido.html -->
+<h1>Calificar "{{ contenido.titulo }}"</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Calificar</button>
+</form>

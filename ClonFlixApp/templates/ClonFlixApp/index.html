@@ -11,18 +11,24 @@
 <section class="py-8 px-4">
     <h2 class="text-3xl font-bold mb-4">Películas Recientes</h2>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 films-container">
-        {% for movie in peliculas_recientes %}
+        {% for pelicula in peliculas_recientes %}
             <div class="film-card-container">
                 <div class="film-card">
-                    <a href="{% url 'detalle_pelicula' movie.id %}">
-                        {% if movie.image_cover %}
-                            <div class="h-64 bg-cover bg-center" style="background-image: url('{{ movie.image_cover.url }}');">
-                                <h3 class="movie-title-overlay">{{ movie.titulo }}</h3>
+                    <a href="{% url 'ClonFlixApp:detalle_pelicula' pelicula.id %}">
+                        {% if pelicula.image_cover %}
+                            <div class="h-64 bg-cover bg-center" style="background-image: url('{{ pelicula.image_cover.url }}');">
+                                <h3 class="movie-title-overlay">{{ pelicula.titulo }}</h3>
+                            </div>
+                        {% else %}
+                            <div class="h-64 bg-gray-400 flex items-center justify-center">
+                                <h3 class="text-white">{{ pelicula.titulo }}</h3>
                             </div>
                         {% endif %}
                     </a>
                 </div>
             </div>
+        {% empty %}
+            <p class="text-gray-500">No hay películas recientes disponibles.</p>
         {% endfor %}
     </div>
 </section>
@@ -33,15 +39,21 @@
         {% for serie in series_recientes %}
             <div class="film-card-container">
                 <div class="film-card">
-                    <a href="{% url 'detalle_serie' serie.id %}">
+                    <a href="{% url 'ClonFlixApp:detalle_serie' serie.id %}">
                         {% if serie.image_cover %}
                             <div class="h-64 bg-cover bg-center" style="background-image: url('{{ serie.image_cover.url }}');">
                                 <h3 class="movie-title-overlay">{{ serie.titulo }}</h3>
+                            </div>
+                        {% else %}
+                            <div class="h-64 bg-gray-400 flex items-center justify-center">
+                                <h3 class="text-white">{{ serie.titulo }}</h3>
                             </div>
                         {% endif %}
                     </a>
                 </div>
             </div>
+        {% empty %}
+            <p class="text-gray-500">No hay series recientes disponibles.</p>
         {% endfor %}
     </div>
 </section>

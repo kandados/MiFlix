@@ -1,0 +1,38 @@
+{% extends "ClonFlixApp/base.html" %}
+{% block content %}
+<section class="py-8 px-4">
+    <h1 class="text-3xl font-bold mb-6">Mi Lista</h1>
+
+    <h2 class="text-2xl font-semibold mb-4">Películas</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {% for item in peliculas %}
+            <div class="film-card">
+                <a href="{% url 'detalle_pelicula' item.pelicula.id %}">
+                    <div class="h-64 bg-cover bg-center"
+                         style="background-image: url('{% if item.pelicula.image_cover %}{{ item.pelicula.image_cover.url }}{% else %}{% static 'ClonFlixApp/images/default_image.jpg' %}{% endif %}');">
+                        <h3 class="movie-title-overlay">{{ item.pelicula.titulo }}</h3>
+                    </div>
+                </a>
+            </div>
+        {% empty %}
+            <p class="text-gray-500">No tienes películas en tu lista.</p>
+        {% endfor %}
+    </div>
+
+    <h2 class="text-2xl font-semibold mt-8 mb-4">Series</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {% for item in series %}
+            <div class="film-card">
+                <a href="{% url 'detalle_serie' item.serie.id %}">
+                    <div class="h-64 bg-cover bg-center"
+                         style="background-image: url('{% if item.serie.image_cover %}{{ item.serie.image_cover.url }}{% else %}{% static 'ClonFlixApp/images/default_image.jpg' %}{% endif %}');">
+                        <h3 class="movie-title-overlay">{{ item.serie.titulo }}</h3>
+                    </div>
+                </a>
+            </div>
+        {% empty %}
+            <p class="text-gray-500">No tienes series en tu lista.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

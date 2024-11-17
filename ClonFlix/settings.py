@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     # Mi app
     'ClonFlixApp',
     'usuarios',
-    'contenido',
+
 ]
 
 AUTH_USER_MODEL = 'usuarios.Usuario'

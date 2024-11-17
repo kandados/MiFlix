@@ -1,19 +1,27 @@
-{% extends "ClonFlixApp/base.html" %}
-{% load static %}
+{% extends 'ClonFlixApp/base.html' %}
+
+{% block title %}Películas | ClonFlix{% endblock %}
 
 {% block content %}
 <section class="py-8 px-4">
     <h2 class="text-3xl font-bold mb-4">Películas</h2>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         {% for pelicula in peliculas %}
-            <div class="film-card">
-                <a href="{% url 'detalle_pelicula' pelicula.id %}">
-                    <div class="h-64 bg-cover bg-center"
-                         style="background-image: url('{% if pelicula.image_cover %}{{ pelicula.image_cover.url }}{% else %}{% static 'path/to/default_image.jpg' %}{% endif %}');">
-                        <h3 class="movie-title-overlay">{{ pelicula.titulo }}</h3>
+            <a href="{% url 'ClonFlixApp:detalle_pelicula' pelicula.id %}" class="film-card block rounded-lg overflow-hidden shadow-lg">
+                {% if pelicula.image_cover %}
+                    <div class="h-64 bg-cover bg-center" style="background-image: url('{{ pelicula.image_cover.url }}');"></div>
+                {% else %}
+                    <div class="h-64 bg-gray-400 flex items-center justify-center">
+                        <span class="text-gray-700">Sin imagen</span>
                     </div>
-                </a>
-            </div>
+                {% endif %}
+                <div class="p-4">
+                    <h4 class="text-lg font-semibold">{{ pelicula.titulo }}</h4>
+                    <p class="text-sm text-gray-500">{{ pelicula.genero }}</p>
+                </div>
+            </a>
+        {% empty %}
+            <p class="text-gray-500">No hay películas disponibles.</p>
         {% endfor %}
     </div>
 </section>

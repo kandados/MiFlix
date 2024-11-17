@@ -21,12 +21,20 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import path
+from ClonFlixApp import views
+from django.urls import path, include
+
+
+app_name = 'ClonFlixApp'  # Define el espacio de nombres para esta aplicación
 
 urlpatterns = [
-    path('usuarios/', include('usuarios.urls')),  # rutas de la aplicación usuarios
-    path('admin/', admin.site.urls),
-    path('', include('ClonFlixApp.urls')),  # rutas de ClonFlixApp
-    path('logout/', LogoutView.as_view(), name='logout'),  # Ruta de logout
+    path('', views.index, name='index'),
+    path('series/', views.series_view, name='series'),
+    path('peliculas/', views.peliculas_view, name='peliculas'),
+    path('buscar/', views.buscar_contenido, name='buscar_contenido'),
+    path('', include('ClonFlixApp.urls')),
+    path('usuarios/', include('usuarios.urls')),
 ]
 
 # configuración multimedia

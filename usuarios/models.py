@@ -1,8 +1,11 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from contenido.models import Contenido  # Importar Contenido
+from django.conf import settings
+from ClonFlixApp.models import Pelicula, Serie
+from django.utils.timezone import now
 
 class Usuario(AbstractUser):
+    """Modelo extendido de usuario para incluir roles y correo electrónico único."""
     ADMIN = 'ADMIN'
     CLIENT = 'CLIENT'
     ROLE_CHOICES = [
@@ -16,15 +19,19 @@ class Usuario(AbstractUser):
     def __str__(self):
         return self.username
 
-class UsuarioContenido(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    contenido = models.ForeignKey(Contenido, on_delete=models.CASCADE)
-    favorito = models.BooleanField(default=False)
-    visto = models.BooleanField(default=False)
-    ver_mas_tarde = models.BooleanField(default=False)
 
+class UsuarioContenido(models.Model):
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="mi_lista")
+    pelicula = models.ForeignKey(Pelicula, on_delete=models.CASCADE, null=True, blank=True, related_name="usuarios_pelicula")
+    serie = models.ForeignKey(Serie, on_delete=models.CASCADE, null=True, blank=True, related_name="usuarios_serie")
+    fecha_agregado = models.DateTimeField(default=now)
+    favorito = models.BooleanField(default=False)
     class Meta:
-        unique_together = ('usuario', 'contenido')
+        unique_together = ('usuario', 'pelicula', 'serie')
 
     def __str__(self):
-        return f"{self.usuario.username} - {self.contenido.titulo}"
+        if self.pelicula:
+            return f"{self.usuario.username} - {self.pelicula.titulo}"
+        if self.serie:
+            return f"{self.usuario.username} - {self.serie.titulo}"
+        return f"{self.usuario.username}"

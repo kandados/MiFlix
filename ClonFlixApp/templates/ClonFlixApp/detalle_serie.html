@@ -15,7 +15,7 @@
             {% if serie.image_cover %}
                 <img src="{{ serie.image_cover.url }}" alt="{{ serie.titulo }}" class="w-full md:w-80 h-auto rounded-lg">
             {% else %}
-                <img src="{% static 'path/to/default_image.jpg' %}" alt="Imagen no disponible" class="w-full md:w-80 h-auto rounded-lg">
+                <img src="{% static 'ClonFlixApp/images/default_image.jpg' %}" alt="Imagen no disponible" class="w-full md:w-80 h-auto rounded-lg">
             {% endif %}
         </div>
 
@@ -32,33 +32,27 @@
             <!-- Detalles de la serie -->
             <div>
                 <h2 class="text-2xl font-semibold mb-2">Detalles</h2>
-                <p><strong>Género:</strong> {{ serie.get_genero_display }}</p>
-                <p><strong>Duración:</strong> {{ serie.duracion }} minutos</p>
+                <p><strong>Género:</strong> {{ serie.genero }}</p>
                 <p><strong>Director:</strong> {{ serie.director }}</p>
-                <p><strong>Actores Principales:</strong> {{ serie.protagonistas }}</p>
+                <p><strong>Temporadas:</strong> {{ serie.temporadas_totales }}</p>
+                <p><strong>Capítulos totales:</strong> {{ serie.capitulos_totales }}</p>
                 <p><strong>Año de estreno:</strong> {{ serie.estreno }}</p>
-                <p><strong>Calificación de Usuario:</strong> {{ serie.calificacion_usuario }} / 5</p>
+                <p><strong>Calificación de Usuario:</strong> {{ serie.calificacion_usuario }} / 10</p>
             </div>
 
             <!-- Botones de interacción solo para usuarios logueados -->
             {% if user.is_authenticated %}
                 <div class="mt-6 flex gap-4">
-                    <form action="{% url 'marcar_favorito' id=serie.id %}" method="post" class="inline-block">
+                    <form action="{% url 'usuarios:agregar_a_mi_lista' serie.id 'serie' %}" method="post" class="inline-block">
                         {% csrf_token %}
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            {% if serie.id in favoritos_ids %}Quitar de Favoritos{% else %}Favorito{% endif %}
+                            Añadir a Mi Lista
                         </button>
                     </form>
-                    <form action="{% url 'marcar_visto' id=serie.id %}" method="post" class="inline-block">
+                    <form action="{% url 'usuarios:marcar_favorito' serie.id 'serie' %}" method="post" class="inline-block">
                         {% csrf_token %}
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            {% if serie.id in visto_ids %}No Visto{% else %}Visto{% endif %}
-                        </button>
-                    </form>
-                    <form action="{% url 'marcar_ver_mas_tarde' contenido_id=serie.id %}" method="post" class="inline-block">
-                        {% csrf_token %}
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            {% if serie.id in ver_mas_tarde_ids %}Quitar Ver Más Tarde{% else %}Ver Más Tarde{% endif %}
+                            {% if serie.id in favoritos_ids %}Quitar de Favoritos{% else %}Añadir a Favoritos{% endif %}
                         </button>
                     </form>
                 </div>

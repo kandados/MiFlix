@@ -1,30 +1,30 @@
 from django.urls import path
-from django.contrib.auth.views import LogoutView
 from . import views
 
+app_name = 'ClonFlixApp'
+
 urlpatterns = [
-    path('', views.index, name='index'),  # Página de inicio
+    # Página principal
+    path('', views.index, name='index'),
 
-    # Rutas para películas
-    path('peliculas/', views.peliculas_view, name='peliculas'),  # Página de películas
-    path('peliculas/<int:id>/', views.detalle_pelicula, name='detalle_pelicula'),  # Detalles de una película específica
-    path('peliculas/<int:id>/favorito/', views.marcar_favorito, name='marcar_favorito'),  # Marcar como favorito
-    path('peliculas/<int:id>/visto/', views.marcar_visto, name='marcar_visto'),  # Marcar como visto
-    path('genero/<str:genre>/', views.peliculas_por_genero, name='peliculas_por_genero'),  # Películas por género
-    path('buscar/', views.buscar_peliculas, name='buscar_peliculas'),  # Búsqueda de películas
+    # Rutas de películas
+    path('peliculas/', views.peliculas_view, name='peliculas'),
+    path('detalle_pelicula/<int:id>/', views.detalle_pelicula, name='detalle_pelicula'),
+    path('peliculas/<int:contenido_id>/accion/<str:accion>/', views.marcar_a_mi_lista, {'tipo': 'pelicula'}, name='accion_pelicula'),
 
-    # Rutas para series
-    path('series/', views.series_view, name='series'),  # Página de series
-    path('series/<int:id>/', views.detalle_serie, name='detalle_serie'),  # Detalles de una serie específica
-    path('series-recientes/', views.series_recientes, name='series_recientes'),  # Ruta para 'Series Recientes'
+    # Rutas de series
+    path('series/', views.series_view, name='series'),
+    path('detalle_serie/<int:id>/', views.detalle_serie, name='detalle_serie'),
+    path('series/<int:contenido_id>/accion/<str:accion>/', views.marcar_a_mi_lista, {'tipo': 'serie'}, name='accion_serie'),
 
-    # Rutas para secciones de contenido
-    path('novedades-mas-vistas/', views.novedades_mas_vistas, name='novedades_mas_vistas'),  # Página de novedades
-    path('recomendacion-usuarios/', views.recomendacion_usuarios, name='recomendacion_usuarios'),  # Página de recomendaciones
+    # Categorías y búsqueda
+    path('genero/<str:genre>/', views.peliculas_por_genero, name='peliculas_por_genero'),
+    path('buscar/', views.buscar_contenido, name='buscar_contenido'),
 
-    # Ruta para 'Mi Lista' del usuario
+    # Novedades y series recientes
+    path('novedades-mas-vistas/', views.novedades_mas_vistas, name='novedades_mas_vistas'),
+    path('series-recientes/', views.series_recientes, name='series_recientes'),
+
+    # Mi Lista
     path('mi_lista/', views.mi_lista_view, name='mi_lista'),
-
-    # Ruta de logout
-    path('logout/', LogoutView.as_view(next_page='index'), name='logout'),  # Redirección a la página de inicio después de cerrar sesión
 ]
