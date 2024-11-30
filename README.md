@@ -17,3 +17,5 @@ Un usuario administrador ademas de todo lo anterior, tendra un panel de administ
 
 Se ha creado un panel de administracion dentro de la propia web para que no tenga que  gestionar nada desde la parte del admin de la base de datos.
 La base de datos esta hecha con Sqlite3.
+
+Como IDE se ha utilizado Pycharm en su version gratuita.
