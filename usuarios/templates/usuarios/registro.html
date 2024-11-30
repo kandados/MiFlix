@@ -1,46 +1,23 @@
-<!-- ClonFlixApp/templates/usuarios/registro.html -->
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Registro de Usuario</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
-    <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 class="text-center text-3xl font-bold mb-6">Registro de Usuario</h2>
+{% extends "ClonFlixApp/base.html" %}
 
-      <!-- Mostrar solo mensajes relacionados con el registro -->
-{% if messages %}
-    {% for message in messages %}
-        {% if "registro" in message.tags or "error" in message.tags %}
-            <div class="p-4 mb-4 text-sm rounded {% if 'error' in message.tags %}bg-red-500 text-white{% else %}bg-green-500 text-white{% endif %}">
-                {{ message }}
-            </div>
-        {% endif %}
-    {% endfor %}
-{% endif %}
-
-        <form action="{% url 'registro' %}" method="post" class="space-y-5">
-            {% csrf_token %}
-            <input type="text" name="username" placeholder="Nombre de usuario" class="block w-full p-3 bg-gray-700 text-white rounded" required>
-            <input type="email" name="email" placeholder="Correo Electrónico" class="block w-full p-3 bg-gray-700 text-white rounded" required>
-            <input type="password" name="password" placeholder="Contraseña" class="block w-full p-3 bg-gray-700 text-white rounded" required>
-            <button type="submit" class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Registrarse</button>
-        </form>
-
-        <!-- Enlace a la página de inicio de sesión -->
-        <div class="text-center mt-4">
-            <p>¿Ya tienes una cuenta?
-                <a href="{% url 'login' %}" class="text-blue-400 hover:underline">Inicia sesión aquí</a>
-            </p>
+{% block content %}
+<div class="max-w-md mx-auto bg-gray-800 p-6 rounded">
+    <h2 class="text-2xl font-bold mb-4 text-center">Registro</h2>
+    <form method="post" action="{% url 'usuarios:registro' %}">
+        {% csrf_token %}
+        <div class="mb-4">
+            <label for="username" class="block text-sm font-medium">Nombre de usuario</label>
+            <input type="text" id="username" name="username" class="w-full mt-1 px-3 py-2 bg-gray-700 rounded">
         </div>
-        <!-- Botón Volver a ClonFlix -->
-        <div class="text-center mt-8">
-            <a href="{% url 'index' %}" class="text-blue-400 hover:underline">Volver a ClonFlix</a>
+        <div class="mb-4">
+            <label for="email" class="block text-sm font-medium">Correo electrónico</label>
+            <input type="email" id="email" name="email" class="w-full mt-1 px-3 py-2 bg-gray-700 rounded">
         </div>
-    </div>
-</body>
-</html>
-
-
+        <div class="mb-4">
+            <label for="password" class="block text-sm font-medium">Contraseña</label>
+            <input type="password" id="password" name="password" class="w-full mt-1 px-3 py-2 bg-gray-700 rounded">
+        </div>
+        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded">Registrarse</button>
+    </form>
+</div>
+{% endblock %}

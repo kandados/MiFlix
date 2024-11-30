@@ -1,23 +1,47 @@
 {% extends 'clonflixapp/base.html' %}
 
 {% block content %}
-<div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md mx-auto mt-10">
-    <h2 class="text-center text-3xl font-bold mb-6">Panel de Usuario</h2>
-    <p class="text-center mb-6">Bienvenido, {{ user.username }}. Este es tu panel personal. Aquí puedes gestionar tus favoritos, ver tu historial y explorar contenido.</p>
+<div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-3xl mx-auto mt-10">
+    <h2 class="text-center text-3xl font-bold mb-2">Panel de Usuario</h2>
 
-    <!-- Secciones de acceso rápido -->
+    <!-- Texto de bienvenida -->
+    <p class="text-center text-xl font-semibold mb-6">Bienvenido, <span class="text-green-400">{{ user.username }}</span>!</p>
+
+    <p class="text-center mb-6">Este es tu panel personal. Como usuario registrado, desde la cabecera de la página, vas a poder agregar y borrar tus películas o series favoritas. Ver el historial del contenido que hayas visto, visualizar estadísticas del tiempo que pasas viendo ClonFlix y explorar todo el contenido de la web.</p>
+
+    <!-- Información del panel con más espacio para los textos -->
     <div class="space-y-5">
-        <div class="bg-gray-700 p-4 rounded-lg">
-            <h3 class="text-xl font-semibold mb-2">Mis Favoritos</h3>
-            <p><a href="{% url 'favoritos' %}" class="text-blue-400 hover:underline">Ver y gestionar tus películas favoritas</a></p>
+        <!-- Nuevo apartado para Series -->
+        <div class="bg-gray-700 p-5 rounded-lg text-center h-auto max-w-xl mx-auto">
+            <h3 class="text-xl font-semibold mb-2">Series</h3>
+            <p class="text-gray-300 line-clamp-2">Explora el catálogo completo de todas las series.</p>
         </div>
-        <div class="bg-gray-700 p-4 rounded-lg">
-            <h3 class="text-xl font-semibold mb-2">Historial de Visualización</h3>
-            <p><a href="{% url 'historial' %}" class="text-blue-400 hover:underline">Revisar el historial de contenido visto</a></p>
+
+        <!-- Nuevo apartado para Películas -->
+        <div class="bg-gray-700 p-5 rounded-lg text-center h-auto max-w-xl mx-auto">
+            <h3 class="text-xl font-semibold mb-2">Películas</h3>
+            <p class="text-gray-300 line-clamp-2">Explora el catálogo completo de todas las películas.</p>
         </div>
-        <div class="bg-gray-700 p-4 rounded-lg">
-            <h3 class="text-xl font-semibold mb-2">Explorar Contenido</h3>
-            <p><a href="{% url 'explorar' %}" class="text-blue-400 hover:underline">Descubre nuevas películas y series</a></p>
+
+        <div class="bg-gray-700 p-5 rounded-lg text-center h-auto max-w-xl mx-auto">
+            <h3 class="text-xl font-semibold mb-2">Favoritos</h3>
+            <p class="text-gray-300 line-clamp-2">Gestiona aquí tus películas favoritas.</p>
+        </div>
+        <div class="bg-gray-700 p-5 rounded-lg text-center h-auto max-w-xl mx-auto">
+            <h3 class="text-xl font-semibold mb-2">(Ya vistas) Historial de Visualización</h3>
+            <p class="text-gray-300 line-clamp-2">Revisa el historial de contenido que has marcado como visto.</p>
+        </div>
+        <div class="bg-gray-700 p-5 rounded-lg text-center h-auto max-w-xl mx-auto">
+            <h3 class="text-xl font-semibold mb-2">Tus Estadísticas</h3>
+            <p class="text-gray-300 line-clamp-2">Analiza tus estadísticas personalizadas.</p>
+        </div>
+
+        <!-- Botón para empezar la aventura -->
+        <div class="text-center mt-6">
+            <a href="{% url 'ClonFlixApp:index' %}" class="inline-block bg-green-500 text-white py-2 px-4 rounded-lg font-semibold text-xl hover:bg-purple-400 transition duration-300">
+    Empieza tu aventura en ClonFlix
+</a>
+            </a>
         </div>
     </div>
 </div>

@@ -1,60 +1,145 @@
-{% extends 'ClonFlixApp/base.html' %}
-
-{% block title %}Inicio | ClonFlix{% endblock %}
+{% extends "ClonFlixApp/base.html" %}
+{% load static %}
 
 {% block content %}
-<section class="py-8 text-center">
-    <h1 class="text-4xl font-bold mb-4">ClonFlix</h1>
-    <p class="text-lg">Plataforma de contenidos audiovisuales.</p>
+<section class="relative bg-gray-900" style="margin: 0; padding: 0;">
+    <!-- Video destacado -->
+    <video autoplay loop muted id="featured-video" class="absolute top-0 left-0 w-full object-cover" style="height: 100vh;">
+        <source src="/media/movie_videos/sample_movie.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Información superpuesta sobre el video -->
+    <div class="relative z-10 flex flex-col items-start justify-center h-screen px-8 text-white">
+        <h1 class="text-5xl font-bold mb-4">Como entrenar a tu dragón 3</h1>
+        <p class="text-lg mb-6">La insólita amistad entre el adolescente vikingo Hipo y su fiel compañero dragón, el Furia Nocturna Desdentao.</p>
+        <div class="flex space-x-4 mb-4">
+            <button class="bg-white text-black px-4 py-2 rounded shadow hover:bg-gray-200">Reproducir</button>
+            <button class="bg-gray-700 text-white px-4 py-2 rounded shadow hover:bg-gray-600">Más información</button>
+        </div>
+
+        <!-- Ícono de sonido -->
+        <div class="flex items-center">
+            <img id="audio-icon" src="{% static 'ClonFlixApp/images/mute_audio.png' %}" alt="Audio Icon"
+                class="w-12 h-12 cursor-pointer hover:opacity-75">
+        </div>
+    </div>
 </section>
 
-<section class="py-8 px-4">
-    <h2 class="text-3xl font-bold mb-4">Películas Recientes</h2>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 films-container">
+<section class="py-4 px-4 bg-gray-900">
+    <!-- Películas Recientes -->
+    <h2 class="text-2xl font-semibold mb-4">Películas Recientes</h2>
+    <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4">
         {% for pelicula in peliculas_recientes %}
-            <div class="film-card-container">
-                <div class="film-card">
-                    <a href="{% url 'ClonFlixApp:detalle_pelicula' pelicula.id %}">
-                        {% if pelicula.image_cover %}
-                            <div class="h-64 bg-cover bg-center" style="background-image: url('{{ pelicula.image_cover.url }}');">
-                                <h3 class="movie-title-overlay">{{ pelicula.titulo }}</h3>
-                            </div>
-                        {% else %}
-                            <div class="h-64 bg-gray-400 flex items-center justify-center">
-                                <h3 class="text-white">{{ pelicula.titulo }}</h3>
-                            </div>
-                        {% endif %}
-                    </a>
+            <a href="{% url 'ClonFlixApp:detalle_pelicula' pelicula.id %}" class="group">
+                <div class="relative bg-gray-800 rounded-lg overflow-hidden shadow-md">
+                    {% if pelicula.image_cover %}
+                        <div class="aspect-w-2 aspect-h-3">
+                            <img src="{{ pelicula.image_cover.url }}" alt="{{ pelicula.titulo }}" class="object-cover w-full h-full group-hover:opacity-75">
+                        </div>
+                    {% else %}
+                        <div class="aspect-w-2 aspect-h-3 bg-gray-600 flex items-center justify-center text-gray-400">Sin imagen</div>
+                    {% endif %}
+                    <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-2">
+                        <h3 class="text-sm font-semibold truncate">{{ pelicula.titulo }}</h3>
+                    </div>
                 </div>
-            </div>
+            </a>
         {% empty %}
-            <p class="text-gray-500">No hay películas recientes disponibles.</p>
+            <p class="text-gray-500">No se encontraron películas recientes.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Películas Mejor Valoradas -->
+    <h2 class="text-2xl font-semibold mt-8 mb-4">Películas Mejor Valoradas</h2>
+    <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+        {% for pelicula in peliculas_mejor_valoradas %}
+            <a href="{% url 'ClonFlixApp:detalle_pelicula' pelicula.id %}" class="group">
+                <div class="relative bg-gray-800 rounded-lg overflow-hidden shadow-md">
+                    {% if pelicula.image_cover %}
+                        <div class="aspect-w-2 aspect-h-3">
+                            <img src="{{ pelicula.image_cover.url }}" alt="{{ pelicula.titulo }}" class="object-cover w-full h-full group-hover:opacity-75">
+                        </div>
+                    {% else %}
+                        <div class="aspect-w-2 aspect-h-3 bg-gray-600 flex items-center justify-center text-gray-400">Sin imagen</div>
+                    {% endif %}
+                    <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-2">
+                        <h3 class="text-sm font-semibold truncate">{{ pelicula.titulo }}</h3>
+                        <p class="text-xs">Calificación: {{ pelicula.calificacion_usuario }}</p>
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+            <p class="text-gray-500">No se encontraron películas mejor valoradas.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Series Recientes -->
+    <h2 class="text-2xl font-semibold mt-8 mb-4">Series Recientes</h2>
+    <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+        {% for serie in series_recientes %}
+            <a href="{% url 'ClonFlixApp:detalle_serie' serie.id %}" class="group">
+                <div class="relative bg-gray-800 rounded-lg overflow-hidden shadow-md">
+                    {% if serie.image_cover %}
+                        <div class="aspect-w-2 aspect-h-3">
+                            <img src="{{ serie.image_cover.url }}" alt="{{ serie.titulo }}" class="object-cover w-full h-full group-hover:opacity-75">
+                        </div>
+                    {% else %}
+                        <div class="aspect-w-2 aspect-h-3 bg-gray-600 flex items-center justify-center text-gray-400">Sin imagen</div>
+                    {% endif %}
+                    <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-2">
+                        <h3 class="text-sm font-semibold truncate">{{ serie.titulo }}</h3>
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+            <p class="text-gray-500">No se encontraron series recientes.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Series Mejor Valoradas -->
+    <h2 class="text-2xl font-semibold mt-8 mb-4">Series Mejor Valoradas</h2>
+    <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+        {% for serie in series_mejor_valoradas %}
+            <a href="{% url 'ClonFlixApp:detalle_serie' serie.id %}" class="group">
+                <div class="relative bg-gray-800 rounded-lg overflow-hidden shadow-md">
+                    {% if serie.image_cover %}
+                        <div class="aspect-w-2 aspect-h-3">
+                            <img src="{{ serie.image_cover.url }}" alt="{{ serie.titulo }}" class="object-cover w-full h-full group-hover:opacity-75">
+                        </div>
+                    {% else %}
+                        <div class="aspect-w-2 aspect-h-3 bg-gray-600 flex items-center justify-center text-gray-400">Sin imagen</div>
+                    {% endif %}
+                    <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-2">
+                        <h3 class="text-sm font-semibold truncate">{{ serie.titulo }}</h3>
+                        <p class="text-xs">Calificación: {{ serie.calificacion_usuario }}</p>
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+            <p class="text-gray-500">No se encontraron series mejor valoradas.</p>
         {% endfor %}
     </div>
 </section>
 
-<section class="py-8 px-4">
-    <h2 class="text-3xl font-bold mb-4">Series Recientes</h2>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 films-container">
-        {% for serie in series_recientes %}
-            <div class="film-card-container">
-                <div class="film-card">
-                    <a href="{% url 'ClonFlixApp:detalle_serie' serie.id %}">
-                        {% if serie.image_cover %}
-                            <div class="h-64 bg-cover bg-center" style="background-image: url('{{ serie.image_cover.url }}');">
-                                <h3 class="movie-title-overlay">{{ serie.titulo }}</h3>
-                            </div>
-                        {% else %}
-                            <div class="h-64 bg-gray-400 flex items-center justify-center">
-                                <h3 class="text-white">{{ serie.titulo }}</h3>
-                            </div>
-                        {% endif %}
-                    </a>
-                </div>
-            </div>
-        {% empty %}
-            <p class="text-gray-500">No hay series recientes disponibles.</p>
-        {% endfor %}
-    </div>
-</section>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const video = document.getElementById("featured-video");
+        const audioIcon = document.getElementById("audio-icon");
+
+        // Alternar sonido al hacer clic en el ícono
+        audioIcon.addEventListener("click", function () {
+            if (video.muted) {
+                video.muted = false;
+                audioIcon.src = "{% static 'ClonFlixApp/images/sound_on.png' %}";
+            } else {
+                video.muted = true;
+                audioIcon.src = "{% static 'ClonFlixApp/images/mute_audio.png' %}";
+            }
+        });
+
+        video.volume = 1;
+        video.play().catch(error => console.error("Error al reproducir video:", error));
+    });
+</script>
 {% endblock %}

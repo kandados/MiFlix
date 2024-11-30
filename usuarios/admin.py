@@ -1,10 +1,8 @@
 from django.contrib import admin
+from .models import Usuario
 
-# Register your models here.
-# usuarios/admin.py
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import Usuario  # Asegúrate de importar tu modelo de usuario personalizado
-
-# Registrar el usuario personalizado en el panel de administración
-admin.site.register(Usuario, UserAdmin)
+@admin.register(Usuario)
+class UsuarioAdmin(admin.ModelAdmin):
+    list_display = ('username', 'email', 'is_staff', 'is_active', 'role')
+    search_fields = ('username', 'email')
+    list_filter = ('is_staff', 'is_active', 'role')

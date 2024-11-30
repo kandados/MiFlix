@@ -4,6 +4,8 @@ from django.conf import settings
 from ClonFlixApp.models import Pelicula, Serie
 from django.utils.timezone import now
 
+
+
 class Usuario(AbstractUser):
     """Modelo extendido de usuario para incluir roles y correo electrónico único."""
     ADMIN = 'ADMIN'
@@ -11,8 +13,9 @@ class Usuario(AbstractUser):
     ROLE_CHOICES = [
         (ADMIN, 'Administrador'),
         (CLIENT, 'Cliente'),
+        ('USER', 'USUARIO'),
     ]
-
+    is_first_login = models.BooleanField(default=True)  # Campo que indica si es el primer login
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=CLIENT)
     email = models.EmailField(unique=True)
 
@@ -26,6 +29,8 @@ class UsuarioContenido(models.Model):
     serie = models.ForeignKey(Serie, on_delete=models.CASCADE, null=True, blank=True, related_name="usuarios_serie")
     fecha_agregado = models.DateTimeField(default=now)
     favorito = models.BooleanField(default=False)
+    visto = models.BooleanField(default=False)
+
     class Meta:
         unique_together = ('usuario', 'pelicula', 'serie')
 

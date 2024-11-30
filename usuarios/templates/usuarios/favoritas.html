@@ -1,0 +1,42 @@
+{% extends "ClonFlixApp/base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="py-8 px-4">
+    <h2 class="text-3xl font-bold mb-4">Tus Favoritos</h2>
+
+    <!-- Películas Favoritas -->
+    <h3 class="text-2xl font-semibold mb-2">Películas</h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {% for item in favoritos_peliculas %}
+            <div class="film-card-container">
+                <a href="{% url 'ClonFlixApp:detalle_pelicula' item.pelicula.id %}" class="block rounded-lg overflow-hidden transform transition duration-300 hover:scale-105">
+                    <div class="h-64 bg-cover bg-center"
+                         style="background-image: url({% if item.pelicula.image_cover %}{{ item.pelicula.image_cover.url }}{% else %}{% static 'ClonFlixApp/images/default_image.jpg' %}{% endif %});">
+                    </div>
+                    <h3 class="movie-title-overlay">{{ item.pelicula.titulo }}</h3>
+                </a>
+            </div>
+        {% empty %}
+            <p class="text-gray-400">No tienes películas favoritas aún.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Series Favoritas -->
+    <h3 class="text-2xl font-semibold mt-6 mb-2">Series</h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {% for item in favoritos_series %}
+            <div class="film-card-container">
+                <a href="{% url 'ClonFlixApp:detalle_serie' item.serie.id %}" class="block rounded-lg overflow-hidden transform transition duration-300 hover:scale-105">
+                    <div class="h-64 bg-cover bg-center"
+                         style="background-image: url({% if item.serie.image_cover %}{{ item.serie.image_cover.url }}{% else %}{% static 'ClonFlixApp/images/default_image.jpg' %}{% endif %});">
+                    </div>
+                    <h3 class="movie-title-overlay">{{ item.serie.titulo }}</h3>
+                </a>
+            </div>
+        {% empty %}
+            <p class="text-gray-400">No tienes series favoritas aún.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

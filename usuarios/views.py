@@ -4,10 +4,31 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Usuario, UsuarioContenido
 from ClonFlixApp.models import Pelicula, Serie
+from django.db.models import Count
+from django.db.models import Q
+from ClonFlixApp.forms import PeliculaForm
+from ClonFlixApp.forms import SerieForm
+from plotly.offline import plot
+import plotly.graph_objects as go
+from django.shortcuts import render
+from django.db.models import Sum
+from plotly.graph_objects import Bar, Pie
 
-def inicio(request):
-    return render(request, 'usuarios/inicio.html')
+# ============================
+# Panel usuario
+# ============================
+@login_required
+def panel_usuario(request):
+    return render(request, 'usuarios/panel_usuario.html')
 
+def inicio_personalizado(request):
+    return render(request, 'ClonFlixApp:index.html')
+
+# ============================
+# Registro de un usuario y Login de un usuario 'No Admin'
+# ============================
+
+# Registro de usuarios
 def registro(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -20,48 +41,108 @@ def registro(request):
             user = Usuario.objects.create_user(username=username, email=email, password=password)
             login(request, user)
             messages.success(request, 'Registro exitoso.')
-            return redirect('usuarios:index')
+            return redirect('usuarios:panel_usuario')  # Redirigir al panel de usuario
         except Exception as e:
             messages.error(request, f'Error: {str(e)}')
     return render(request, 'usuarios/registro.html')
 
+
+# login Inicio de sesión como usuario o como Admin
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username')
+        password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
-        if user:
+
+        if user is not None:
             login(request, user)
-            return redirect('usuarios:index')
-        messages.error(request, 'Usuario o contraseña incorrectos.')
+
+            # Si el usuario es un administrador, redirigir al panel admin
+            if user.is_staff or user.is_superuser:
+                return redirect('usuarios:panel_admin')  # Redirigir al panel de administración
+
+            # Redirigir a la página de inicio para cualquier usuario no administrador
+            return redirect('ClonFlixApp:index')  # Redirigir al inicio como usuario registrado
+
+        else:
+            messages.error(request, 'Usuario o contraseña incorrectos.')
+
     return render(request, 'usuarios/login.html')
 
-@login_required
-def panel_usuario(request):
-    return render(request, 'usuarios/panel_usuario.html')
 
+
+# Función para verificar si un usuario es administrador
+def es_administrador(user):
+    return user.is_authenticated and user.is_staff
+
+
+# ============================
+# Autenticación y Sesión Admin
+# ============================
 @login_required
 def panel_admin(request):
     return render(request, 'usuarios/panel_admin.html')
 
-# Función para verificar si el usuario es administrador
-def es_administrador(user):
-    return user.is_authenticated and user.role == 'ADMIN'
+# ============================
+# Gestión de Usuarios Admin
+# ============================
 
 @login_required
 @user_passes_test(es_administrador)
 def gestion_usuarios(request):
-    usuarios = Usuario.objects.all()
+    query = request.GET.get('q', '').strip()  # Captura y limpia el término de búsqueda
+    usuarios = Usuario.objects.all()  # Consulta base inicial
+
+    if query:
+        # Construimos el filtro dinámicamente
+        filtro = Q()
+
+        # Filtro por ID (si la búsqueda es numérica)
+        if query.isdigit():
+            filtro |= Q(id=query)
+
+        # Filtro por nombre de usuario
+        filtro |= Q(username__icontains=query)
+
+        # Filtro por correo electrónico
+        filtro |= Q(email__icontains=query)
+
+        # Filtro por rol
+        if query.lower() in ['admin', 'administrador']:
+            filtro |= Q(is_staff=True)
+        elif query.lower() == 'usuario':
+            filtro |= Q(is_staff=False)
+
+        # Aplicamos el filtro a la consulta
+        usuarios = usuarios.filter(filtro)
+
     return render(request, 'usuarios/gestion_usuarios.html', {'usuarios': usuarios})
+
+
+
+@login_required
+@user_passes_test(es_administrador)
+def crear_usuario(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        Usuario.objects.create_user(username=username, email=email, password=password)
+        messages.success(request, "Usuario creado correctamente.")
+        return redirect('usuarios:gestion_usuarios')
+    return render(request, 'usuarios/crear_usuario.html')
 
 @login_required
 @user_passes_test(es_administrador)
 def editar_usuario(request, user_id):
     usuario = get_object_or_404(Usuario, id=user_id)
     if request.method == 'POST':
-        usuario.username = request.POST.get('username', usuario.username)
-        usuario.email = request.POST.get('email', usuario.email)
+        usuario.username = request.POST['username']
+        usuario.email = request.POST['email']
+        if request.POST['password']:
+            usuario.set_password(request.POST['password'])
         usuario.save()
+        messages.success(request, "Usuario actualizado correctamente.")
         return redirect('usuarios:gestion_usuarios')
     return render(request, 'usuarios/editar_usuario.html', {'usuario': usuario})
 
@@ -69,46 +150,364 @@ def editar_usuario(request, user_id):
 @user_passes_test(es_administrador)
 def eliminar_usuario(request, user_id):
     usuario = get_object_or_404(Usuario, id=user_id)
-    if request.method == 'POST':  # Confirmación antes de eliminar
+    if request.method == 'POST':  # Confirmar eliminación
         usuario.delete()
-        return redirect('usuarios:gestion_usuarios')  # Redirigir a la página de gestión de usuarios
+        messages.success(request, f'El usuario "{usuario.username}" ha sido eliminado correctamente.')
+        return redirect('usuarios:gestion_usuarios')  # Redirigir a la lista de usuarios
     return render(request, 'usuarios/eliminar_usuario.html', {'usuario': usuario})
 
+# ============================
+# Gestión de Contenidos Admin
+# ============================
+@login_required
+@user_passes_test(es_administrador)
+def gestion_contenidos(request):
+    # Capturar el término de búsqueda desde los parámetros GET
+    query = request.GET.get('q', '').strip()
 
+    # Obtener todas las películas y series
+    peliculas = Pelicula.objects.all()
+    series = Serie.objects.all()
+
+    # Filtrar si hay un término de búsqueda
+    if query:
+        peliculas = peliculas.filter(titulo__icontains=query)  # Filtrar por título de película
+        series = series.filter(titulo__icontains=query)        # Filtrar por título de serie
+
+    return render(request, 'usuarios/gestion_contenidos.html', {
+        'peliculas': peliculas,
+        'series': series,
+        'query': query,  # Pasar el término de búsqueda para que se muestre en el campo de texto
+    })
 
 @login_required
-def favoritos(request):
-    favoritos = UsuarioContenido.objects.filter(usuario=request.user, pelicula__isnull=False)
-    return render(request, 'usuarios/favoritos.html', {'favoritos': favoritos})
-
-@login_required
-def agregar_a_mi_lista(request, contenido_id, tipo):
-    if tipo == 'pelicula':
-        contenido = get_object_or_404(Pelicula, id=contenido_id)
-    elif tipo == 'serie':
-        contenido = get_object_or_404(Serie, id=contenido_id)
+@user_passes_test(es_administrador)
+def crear_pelicula(request):
+    if request.method == 'POST':
+        form = PeliculaForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('ClonFlixApp:peliculas')
     else:
-        messages.error(request, 'Tipo de contenido no válido.')
-        return redirect('usuarios:index')
-    UsuarioContenido.objects.get_or_create(usuario=request.user, pelicula=contenido if tipo == 'pelicula' else None,
-                                           serie=contenido if tipo == 'serie' else None)
-    messages.success(request, f'{contenido.titulo} ha sido añadido a tu lista.')
-    return redirect('usuarios:index')
+        form = PeliculaForm()
+    return render(request, 'usuarios/crear_pelicula.html', {'form': form})
 
+@login_required
+@user_passes_test(es_administrador)
+def crear_serie(request):
+    if request.method == 'POST':
+        form = SerieForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('usuarios:gestion_contenidos')  # Ajusta esta redirección según tu proyecto
+    else:
+        form = SerieForm()
+    return render(request, 'usuarios/crear_serie.html', {'form': form})
+
+@login_required
+@user_passes_test(es_administrador)
+def editar_pelicula(request, pelicula_id):
+    # Obtener la película a editar
+    pelicula = get_object_or_404(Pelicula, id=pelicula_id)
+
+    if request.method == 'POST':
+        # Cargar el formulario con los datos enviados
+        form = PeliculaForm(request.POST, request.FILES, instance=pelicula)
+        if form.is_valid():
+            form.save()
+            return redirect('usuarios:gestion_contenidos')  # Ajusta la redirección según tu proyecto
+    else:
+        # Cargar el formulario con los datos de la película
+        form = PeliculaForm(instance=pelicula)
+
+    return render(request, 'usuarios/editar_pelicula.html', {'form': form, 'pelicula': pelicula})
+
+
+@login_required
+@user_passes_test(es_administrador)
+def eliminar_pelicula(request, pelicula_id):
+    pelicula = get_object_or_404(Pelicula, id=pelicula_id)
+    if request.method == 'POST':  # Confirmar eliminación
+        pelicula.delete()
+        messages.success(request, f'La película "{pelicula.titulo}" ha sido eliminada correctamente.')
+        return redirect('usuarios:gestion_contenidos')  # Redirigir a la gestión de contenidos
+    return render(request, 'usuarios/eliminar_pelicula.html', {'pelicula': pelicula})
+
+
+
+@login_required
+@user_passes_test(es_administrador)
+def editar_serie(request, serie_id):
+    serie = get_object_or_404(Serie, id=serie_id)
+    if request.method == 'POST':
+        serie.titulo = request.POST.get('titulo')
+        serie.genero = request.POST.get('genero')
+        serie.save()
+        messages.success(request, 'Serie actualizada exitosamente.')
+        return redirect('usuarios:gestion_contenidos')
+    return render(request, 'usuarios/editar_serie.html', {'serie': serie})
+
+
+@login_required
+@user_passes_test(es_administrador)
+def eliminar_serie(request, serie_id):
+    serie = get_object_or_404(Serie, id=serie_id)
+    if request.method == 'POST':
+        serie.delete()
+        messages.success(request, 'Serie eliminada exitosamente.')
+        return redirect('usuarios:gestion_contenidos')
+    return render(request, 'usuarios/eliminar_serie.html', {'serie': serie})
+
+
+
+# ============================
+# Favoritos, Ya Vistas y estadisticas Usuario Logueado
+# ============================
+@login_required
+def favoritas_view(request):
+    favoritos_peliculas = UsuarioContenido.objects.filter(usuario=request.user, favorito=True, pelicula__isnull=False)
+    favoritos_series = UsuarioContenido.objects.filter(usuario=request.user, favorito=True, serie__isnull=False)
+    return render(request, 'usuarios/favoritas.html', {
+        'favoritos_peliculas': favoritos_peliculas,
+        'favoritos_series': favoritos_series,
+    })
+
+@login_required
+def ya_vistas_view(request):
+    vistas_peliculas = UsuarioContenido.objects.filter(usuario=request.user, visto=True, pelicula__isnull=False)
+    vistas_series = UsuarioContenido.objects.filter(usuario=request.user, visto=True, serie__isnull=False)
+    return render(request, 'usuarios/ya_vistas.html', {
+        'vistas_peliculas': vistas_peliculas,
+        'vistas_series': vistas_series,
+    })
 
 @login_required
 def marcar_favorito(request, contenido_id, tipo):
-    # Obtener el contenido basado en el ID y el tipo
-    contenido = get_object_or_404(Contenido, id=contenido_id, tipo=tipo)
-
-    # Verificar si el contenido ya está en favoritos
-    usuario_contenido, created = UsuarioContenido.objects.get_or_create(
+    contenido = get_object_or_404(Pelicula if tipo == 'pelicula' else Serie, id=contenido_id)
+    usuario_contenido, _ = UsuarioContenido.objects.get_or_create(
         usuario=request.user,
-        contenido=contenido
+        pelicula=contenido if tipo == 'pelicula' else None,
+        serie=contenido if tipo == 'serie' else None,
     )
-    # Alternar el estado de favorito
     usuario_contenido.favorito = not usuario_contenido.favorito
     usuario_contenido.save()
+    messages.success(request, f'{contenido.titulo} {"añadido a" if usuario_contenido.favorito else "eliminado de"} tus favoritos.')
+    return redirect(request.META.get('HTTP_REFERER', 'usuarios:favoritas'))
 
-    # Redirigir a la página anterior
-    return redirect(request.META.get('HTTP_REFERER', 'usuarios:index'))
+@login_required
+def marcar_como_visto(request, contenido_id, tipo):
+    contenido = get_object_or_404(Pelicula if tipo == 'pelicula' else Serie, id=contenido_id)
+    usuario_contenido, _ = UsuarioContenido.objects.get_or_create(
+        usuario=request.user,
+        pelicula=contenido if tipo == 'pelicula' else None,
+        serie=contenido if tipo == 'serie' else None,
+    )
+    usuario_contenido.visto = not usuario_contenido.visto
+    usuario_contenido.save()
+    messages.success(request, f'{contenido.titulo} {"marcado como visto" if usuario_contenido.visto else "desmarcado como visto"}.')
+    return redirect(request.META.get('HTTP_REFERER', 'usuarios:ya_vistas'))
+
+@login_required
+def estadisticas_usuario(request):
+    usuario = request.user
+
+    # Métricas individuales
+    peliculas_vistas = usuario.mi_lista.filter(pelicula__isnull=False, visto=True).count()
+    series_vistas = usuario.mi_lista.filter(serie__isnull=False, visto=True).count()
+
+    # Tiempo dedicado (Películas y Series)
+    tiempo_peliculas = usuario.mi_lista.filter(pelicula__isnull=False, visto=True).aggregate(total=Sum('pelicula__duracion'))['total'] or 0
+    tiempo_series = usuario.mi_lista.filter(serie__isnull=False, visto=True).aggregate(total=Sum('serie__duracion_media_capitulo'))['total'] or 0
+
+    # Distribución de géneros (Películas)
+    peliculas_generos = usuario.mi_lista.filter(pelicula__isnull=False, visto=True).values('pelicula__genero').annotate(total=Count('pelicula__genero'))
+    series_generos = usuario.mi_lista.filter(serie__isnull=False, visto=True).values('serie__genero').annotate(total=Count('serie__genero'))
+
+    # Estilo general de las gráficas
+    layout_estilo = go.Layout(
+        paper_bgcolor='rgba(31, 41, 55, 1)',  # Fondo general
+        plot_bgcolor='rgba(31, 41, 55, 1)',   # Fondo del área de la gráfica
+        font=dict(color="white"),            # Texto blanco
+        title_font=dict(size=16, color="white"),  # Títulos más pequeños
+        height=300,  # Altura compacta
+        width=400,   # Ancho compacto
+    )
+
+    # Gráfica 1: Tiempo en Películas
+    fig_peliculas_tiempo = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=tiempo_peliculas,
+        title={'text': "Minutos en Películas"},
+        gauge={
+            'axis': {'range': [None, max(tiempo_peliculas * 1.2, 1000)]},
+            'bar': {'color': "green"},
+        }
+    ))
+    fig_peliculas_tiempo.update_layout(layout_estilo)
+
+    # Gráfica 2: Tiempo en Series
+    fig_series_tiempo = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=tiempo_series,
+        title={'text': "Minutos en Series"},
+        gauge={
+            'axis': {'range': [None, max(tiempo_series * 1.2, 1000)]},
+            'bar': {'color': "blue"},
+        }
+    ))
+    fig_series_tiempo.update_layout(layout_estilo)
+
+    # Gráfica 3: Distribución de Géneros (Películas)
+    fig_peliculas_generos = go.Figure(data=[go.Pie(
+        labels=[item['pelicula__genero'] for item in peliculas_generos],
+        values=[item['total'] for item in peliculas_generos],
+        hole=.4  # Gráfica tipo "donut"
+    )])
+    fig_peliculas_generos.update_layout(layout_estilo, title="Distribución de Géneros en Películas")
+
+    # Gráfica 4: Distribución de Géneros (Series)
+    fig_series_generos = go.Figure(data=[go.Pie(
+        labels=[item['serie__genero'] for item in series_generos],
+        values=[item['total'] for item in series_generos],
+        hole=.4  # Gráfica tipo "donut"
+    )])
+    fig_series_generos.update_layout(layout_estilo, title="Distribución de Géneros en Series")
+
+    # Convertir gráficos a HTML
+    chart_peliculas_tiempo = fig_peliculas_tiempo.to_html(full_html=False)
+    chart_series_tiempo = fig_series_tiempo.to_html(full_html=False)
+    chart_peliculas_generos = fig_peliculas_generos.to_html(full_html=False)
+    chart_series_generos = fig_series_generos.to_html(full_html=False)
+
+    return render(request, 'usuarios/estadisticas_usuario.html', {
+        'usuario': usuario,
+        'peliculas_vistas': peliculas_vistas,
+        'series_vistas': series_vistas,
+        'tiempo_peliculas': tiempo_peliculas,
+        'tiempo_series': tiempo_series,
+        'chart_peliculas_tiempo': chart_peliculas_tiempo,
+        'chart_series_tiempo': chart_series_tiempo,
+        'chart_peliculas_generos': chart_peliculas_generos,
+        'chart_series_generos': chart_series_generos,
+    })
+
+
+# ============================
+# Gráficas y Estadísticas Admin
+# ============================
+
+@login_required
+@user_passes_test(lambda user: user.is_staff)
+def graficas_y_stats(request):
+    # Datos del Resumen
+    total_usuarios = Usuario.objects.count()
+    total_peliculas = Pelicula.objects.count()
+    total_series = Serie.objects.count()
+
+    # Datos de Usuarios por Rol
+    usuarios_por_rol = Usuario.objects.values('role').annotate(total=Count('id'))
+    roles = [usuario['role'] for usuario in usuarios_por_rol]
+    roles_count = [usuario['total'] for usuario in usuarios_por_rol]
+
+    # Gráfico de Roles
+    grafico_usuarios = go.Figure(data=[go.Pie(labels=roles, values=roles_count, hole=0.4)])
+    grafico_usuarios.update_layout(
+        title="Distribución de Roles",
+        height=300,
+        paper_bgcolor="rgba(0,0,0,0)",
+        font_color="white"
+    )
+    grafico_usuarios = grafico_usuarios.to_html(full_html=False)
+
+    # Películas más vistas
+    peliculas_mas_vistas = Pelicula.objects.annotate(
+        total_vistas=Count('usuarios_pelicula', filter=Q(usuarios_pelicula__visto=True))
+    ).order_by('-total_vistas')[:5]
+    peliculas_titulos = [pelicula.titulo for pelicula in peliculas_mas_vistas]
+    peliculas_vistas = [pelicula.total_vistas for pelicula in peliculas_mas_vistas]
+
+    grafico_peliculas = go.Figure(data=[go.Bar(x=peliculas_titulos, y=peliculas_vistas)])
+    grafico_peliculas.update_layout(
+        title="Películas Más Vistas",
+        height=300,
+        paper_bgcolor="rgba(0,0,0,0)",
+        font_color="white"
+    )
+    grafico_peliculas = grafico_peliculas.to_html(full_html=False)
+
+    # Series más vistas
+    series_mas_vistas = Serie.objects.annotate(
+        total_vistas=Count('usuarios_serie', filter=Q(usuarios_serie__visto=True))
+    ).order_by('-total_vistas')[:5]
+    series_titulos = [serie.titulo for serie in series_mas_vistas]
+    series_vistas = [serie.total_vistas for serie in series_mas_vistas]
+
+    grafico_series = go.Figure(data=[go.Bar(x=series_titulos, y=series_vistas)])
+    grafico_series.update_layout(
+        title="Series Más Vistas",
+        height=300,
+        paper_bgcolor="rgba(0,0,0,0)",
+        font_color="white"
+    )
+    grafico_series = grafico_series.to_html(full_html=False)
+
+    # Tabla de Usuarios
+    usuarios = Usuario.objects.annotate(
+        peliculas_vistas=Count('mi_lista', filter=Q(mi_lista__pelicula__isnull=False, mi_lista__visto=True)),
+        series_vistas=Count('mi_lista', filter=Q(mi_lista__serie__isnull=False, mi_lista__visto=True))
+    )
+
+    context = {
+        'total_usuarios': total_usuarios,
+        'total_peliculas': total_peliculas,
+        'total_series': total_series,
+        'grafico_usuarios': grafico_usuarios,
+        'grafico_peliculas': grafico_peliculas,
+        'grafico_series': grafico_series,
+        'usuarios': usuarios,  # Para listar usuarios en la tabla
+    }
+
+    return render(request, 'usuarios/graficas_y_stats.html', context)
+
+@login_required
+@user_passes_test(lambda user: user.is_staff)
+def estadisticas_usuario_admin(request, usuario_id):
+    usuario = get_object_or_404(Usuario, id=usuario_id)
+
+    # Métricas individuales
+    peliculas_vistas = usuario.mi_lista.filter(pelicula__isnull=False, visto=True).count()
+    series_vistas = usuario.mi_lista.filter(serie__isnull=False, visto=True).count()
+
+    # Distribución de géneros (Películas)
+    peliculas_generos = usuario.mi_lista.filter(pelicula__isnull=False, visto=True).values('pelicula__genero').annotate(total=Count('pelicula__genero'))
+    series_generos = usuario.mi_lista.filter(serie__isnull=False, visto=True).values('serie__genero').annotate(total=Count('serie__genero'))
+
+    # Gráficos
+    peliculas_chart = go.Bar(
+        x=[item['pelicula__genero'] for item in peliculas_generos],
+        y=[item['total'] for item in peliculas_generos],
+        name='Películas'
+    )
+
+    series_chart = go.Bar(
+        x=[item['serie__genero'] for item in series_generos],
+        y=[item['total'] for item in series_generos],
+        name='Series'
+    )
+
+    layout = go.Layout(title='Distribución de Géneros', barmode='group')
+    fig = go.Figure(data=[peliculas_chart, series_chart], layout=layout)
+    chart_div = plot(fig, output_type='div')
+
+    # Tiempo dedicado (simulación)
+    tiempo_peliculas = usuario.mi_lista.filter(pelicula__isnull=False, visto=True).aggregate(total=Sum('pelicula__duracion'))['total'] or 0
+    tiempo_series = usuario.mi_lista.filter(serie__isnull=False, visto=True).aggregate(total=Sum('serie__duracion_media_capitulo'))['total'] or 0
+
+    return render(request, 'usuarios/estadisticas_usuario.html', {
+        'usuario': usuario,
+        'peliculas_vistas': peliculas_vistas,
+        'series_vistas': series_vistas,
+        'tiempo_peliculas': tiempo_peliculas,
+        'tiempo_series': tiempo_series,
+        'chart_div': chart_div
+    })

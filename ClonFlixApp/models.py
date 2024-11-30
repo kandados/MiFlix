@@ -1,5 +1,8 @@
 from django.db import models
 
+
+
+
 class Pelicula(models.Model):
     id = models.AutoField(primary_key=True)
     titulo = models.CharField(max_length=255)
@@ -14,7 +17,13 @@ class Pelicula(models.Model):
     image_cover = models.ImageField(upload_to='movie_images/', blank=True, null=True)
 
     class Meta:
-        db_table = 'Peliculas'  # Nombre de la tabla
+        db_table = 'Peliculas'  # Nombre de la tabla en la base de datos
+        verbose_name = "Película"  # Nombre en el panel de administración
+        verbose_name_plural = "Películas"
+
+    def __str__(self):
+        return self.titulo
+
 
 class Serie(models.Model):
     id = models.AutoField(primary_key=True)
@@ -32,5 +41,6 @@ class Serie(models.Model):
     image_cover = models.ImageField(upload_to='series_images/', blank=True, null=True)
 
     class Meta:
-        db_table = 'Series'
-
+        db_table = 'Series'  # Nombre de la tabla en la base de datos
+        verbose_name = "Serie"  # Nombre en el panel de administración
+        verbose_name_plural = "Series"

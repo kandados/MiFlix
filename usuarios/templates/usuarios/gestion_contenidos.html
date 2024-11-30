@@ -1,0 +1,106 @@
+{% extends "ClonFlixApp/base.html" %}
+{% block content %}
+
+<section class="py-8 px-4">
+    <h1 class="text-4xl font-bold text-center mb-8">Gestión de Contenidos</h1>
+
+    <!-- Formulario de búsqueda -->
+    <div class="flex justify-center mb-8 space-x-2">
+        <form method="get" action="{% url 'usuarios:gestion_contenidos' %}" class="flex items-center">
+            <input
+                type="text"
+                name="q"
+                value="{{ query|default:'' }}"
+                placeholder="Buscar por título..."
+                class="w-64 p-2 rounded-l bg-gray-900 text-white border border-gray-700 focus:ring focus:ring-blue-500 placeholder-gray-500"
+            >
+            <button
+                type="submit"
+                class="bg-green-500 text-white px-4 py-2 rounded-r hover:bg-green-600"
+            >
+                Buscar
+            </button>
+        </form>
+
+        <!-- Botón de Volver -->
+        <a href="{% url 'usuarios:gestion_contenidos' %}"
+           class="bg-purple-600 text-white font-bold px-4 py-2 rounded hover:bg-purple-700 transition duration-200">
+            Volver
+        </a>
+    </div>
+
+    <!-- Opciones para crear nuevo contenido -->
+    <div class="flex justify-between items-center mb-8">
+        <a href="{% url 'usuarios:crear_pelicula' %}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+            Crear Película
+        </a>
+        <a href="{% url 'usuarios:crear_serie' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Crear Serie
+        </a>
+    </div>
+
+    <!-- Tabla de Películas -->
+    <h2 class="text-2xl font-semibold mb-4">Películas</h2>
+    <table class="w-full bg-gray-800 text-white rounded-lg">
+        <thead>
+            <tr class="bg-gray-700">
+                <th class="px-4 py-2">ID</th>
+                <th class="px-4 py-2">Título</th>
+                <th class="px-4 py-2">Género</th>
+                <th class="px-4 py-2">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pelicula in peliculas %}
+            <tr class="border-b border-gray-700">
+                <td class="px-4 py-2">{{ pelicula.id }}</td>
+                <td class="px-4 py-2">{{ pelicula.titulo }}</td>
+                <td class="px-4 py-2">{{ pelicula.genero|default:"No especificado" }}</td>
+                <td class="px-4 py-2">
+                    <a href="{% url 'usuarios:editar_pelicula' pelicula.id %}" class="text-yellow-500 hover:text-yellow-700">Editar</a> |
+                    <a href="{% url 'usuarios:eliminar_pelicula' pelicula.id %}" class="text-red-500 hover:text-red-700">Eliminar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center text-gray-400 py-4">No hay películas registradas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Espaciado -->
+    <div class="my-8"></div>
+
+    <!-- Tabla de Series -->
+    <h2 class="text-2xl font-semibold mb-4">Series</h2>
+    <table class="w-full bg-gray-800 text-white rounded-lg">
+        <thead>
+            <tr class="bg-gray-700">
+                <th class="px-4 py-2">ID</th>
+                <th class="px-4 py-2">Título</th>
+                <th class="px-4 py-2">Género</th>
+                <th class="px-4 py-2">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for serie in series %}
+            <tr class="border-b border-gray-700">
+                <td class="px-4 py-2">{{ serie.id }}</td>
+                <td class="px-4 py-2">{{ serie.titulo }}</td>
+                <td class="px-4 py-2">{{ serie.genero|default:"No especificado" }}</td>
+                <td class="px-4 py-2">
+                    <a href="{% url 'usuarios:editar_serie' serie.id %}" class="text-yellow-500 hover:text-yellow-700">Editar</a> |
+                    <a href="{% url 'usuarios:eliminar_serie' serie.id %}" class="text-red-500 hover:text-red-700">Eliminar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center text-gray-400 py-4">No hay series registradas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{% endblock %}

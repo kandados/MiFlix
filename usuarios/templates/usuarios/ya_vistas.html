@@ -1,0 +1,48 @@
+{% extends "ClonFlixApp/base.html" %}
+{% block content %}
+<section class="py-8 px-4">
+    <h1 class="text-4xl font-bold text-center mb-6">Contenido Marcado como Visto</h1>
+
+    <!-- Películas Vistas -->
+    <div class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">Películas</h2>
+        {% if vistas_peliculas %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {% for pelicula in vistas_peliculas %}
+                    <div class="bg-gray-800 text-white rounded-lg overflow-hidden shadow-lg">
+                        <img src="{{ pelicula.pelicula.image_cover.url|default:'{% static "ClonFlixApp/images/default_image.jpg" %}' }}" alt="{{ pelicula.pelicula.titulo }}" class="w-full h-64 object-cover">
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold mb-2">{{ pelicula.pelicula.titulo }}</h3>
+                            <p class="text-sm mb-4">{{ pelicula.pelicula.sinopsis|truncatechars:100 }}</p>
+                            <a href="{% url 'ClonFlixApp:detalle_pelicula' pelicula.pelicula.id %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Ver Detalle</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center text-gray-400">No has marcado ninguna película como vista.</p>
+        {% endif %}
+    </div>
+
+    <!-- Series Vistas -->
+    <div>
+        <h2 class="text-2xl font-semibold mb-4">Series</h2>
+        {% if vistas_series %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {% for serie in vistas_series %}
+                    <div class="bg-gray-800 text-white rounded-lg overflow-hidden shadow-lg">
+                        <img src="{{ serie.serie.image_cover.url|default:'{% static "ClonFlixApp/images/default_image.jpg" %}' }}" alt="{{ serie.serie.titulo }}" class="w-full h-64 object-cover">
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold mb-2">{{ serie.serie.titulo }}</h3>
+                            <p class="text-sm mb-4">{{ serie.serie.sinopsis|truncatechars:100 }}</p>
+                            <a href="{% url 'ClonFlixApp:detalle_serie' serie.serie.id %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Ver Detalle</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center text-gray-400">No has marcado ninguna serie como vista.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

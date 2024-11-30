@@ -1,0 +1,12 @@
+{% extends "ClonFlixApp/base.html" %}
+{% block content %}
+<section class="py-8 px-4">
+    <h1 class="text-4xl font-bold text-center mb-8 text-red-500">Eliminar Usuario</h1>
+    <p class="text-center text-white mb-4">¿Estás seguro de que deseas eliminar al usuario <strong>"{{ usuario.username }}"</strong>?</p>
+    <form method="post" class="text-center">
+        {% csrf_token %}
+        <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Confirmar Eliminación</button>
+        <a href="{% url 'usuarios:gestion_usuarios' %}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-4">Cancelar</a>
+    </form>
+</section>
+{% endblock %}

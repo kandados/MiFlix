@@ -1,0 +1,67 @@
+{% extends "ClonFlixApp/base.html" %}
+
+{% block content %}
+<section class="py-8 px-4">
+    <h1 class="text-4xl font-bold text-center mb-6">Gráficas y Estadísticas</h1>
+
+    <!-- Resumen -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-gray-800 p-6 rounded-lg text-center">
+            <h2 class="text-2xl font-bold text-green-400">Usuarios Totales</h2>
+            <p class="text-3xl font-bold">{{ total_usuarios }}</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-lg text-center">
+            <h2 class="text-2xl font-bold text-blue-400">Películas Totales</h2>
+            <p class="text-3xl font-bold">{{ total_peliculas }}</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-lg text-center">
+            <h2 class="text-2xl font-bold text-yellow-400">Series Totales</h2>
+            <p class="text-3xl font-bold">{{ total_series }}</p>
+        </div>
+    </div>
+
+    <!-- Gráficas -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-gray-800 p-6 rounded-lg">
+            <h2 class="text-2xl font-bold text-center mb-4">Distribución de Roles</h2>
+            {{ grafico_usuarios|safe }}
+        </div>
+        <div class="bg-gray-800 p-6 rounded-lg">
+            <h2 class="text-2xl font-bold text-center mb-4">Películas Más Vistas</h2>
+            {{ grafico_peliculas|safe }}
+        </div>
+        <div class="bg-gray-800 p-6 rounded-lg">
+            <h2 class="text-2xl font-bold text-center mb-4">Series Más Vistas</h2>
+            {{ grafico_series|safe }}
+        </div>
+    </div>
+
+    <!-- Tabla de Usuarios -->
+    <div class="mt-8">
+        <h2 class="text-2xl font-bold text-center mb-4">Estadísticas de Usuarios</h2>
+        <table class="min-w-full bg-gray-800 text-white rounded-lg">
+            <thead>
+                <tr class="text-left bg-gray-700">
+                    <th class="py-2 px-4">Usuario</th>
+                    <th class="py-2 px-4">Películas Vistas</th>
+                    <th class="py-2 px-4">Series Vistas</th>
+                    <th class="py-2 px-4">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr class="border-t border-gray-700">
+                    <td class="py-2 px-4">{{ usuario.username }}</td>
+                    <td class="py-2 px-4">{{ usuario.peliculas_vistas }}</td>
+                    <td class="py-2 px-4">{{ usuario.series_vistas }}</td>
+                    <td class="py-2 px-4">
+    <a href="{% url 'usuarios:estadisticas_usuario_admin' usuario.id %}"
+       class="text-green-400 hover:underline">Ver Estadísticas</a>
+</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
