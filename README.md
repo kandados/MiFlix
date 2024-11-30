@@ -1,4 +1,4 @@
-Este repositorio forma parte del Proyecto final de un master en python. Esta desarrollado con Python como lenguaje de programacion para el backend, Django como framework y html y css para el frontend.
+Este repositorio forma parte del Proyecto final de un master. Esta desarrollado con Python como lenguaje de programacion para el backend, Django como framework y html y css para el frontend.
 
 El proyecto simula una Plataforma de contenidos audiovisuales, con gestion de usuarios, de peliculas y series del lado del administrador y una gestion de peliculas o series favoritas y vistas 
 (tanto peliculas como series) del lado del usuario registrado.
