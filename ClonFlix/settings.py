@@ -9,7 +9,14 @@ SECRET_KEY = "django-insecure-&8o%-b4ml$znrgg#=)&329fp^alx(u8nkk7pi_6o%zq8uo!i-_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+CSRF_TRUSTED_ORIGINS = [
+    'https://violent-flossie-kandados-48df4464.koyeb.app',
+]
+
+
+ALLOWED_HOSTS = ['violent-flossie-kandados-48df4464.koyeb.app',
+                 '127.0.0.1',
+                 'localhost']
 
 # Application definition
 INSTALLED_APPS = [
@@ -19,7 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django_extensions",  # Herramientas de desarrollo (si no se usa, puedes eliminarla)
+    "django_extensions",  # Herramientas de desarrollo
     # Aplicaciones del proyecto
     'ClonFlixApp',
     'usuarios',

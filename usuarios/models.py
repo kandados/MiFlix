@@ -30,6 +30,7 @@ class UsuarioContenido(models.Model):
     fecha_agregado = models.DateTimeField(default=now)
     favorito = models.BooleanField(default=False)
     visto = models.BooleanField(default=False)
+    calificacion = models.FloatField(null=True, blank=True)
 
     class Meta:
         unique_together = ('usuario', 'pelicula', 'serie')
@@ -40,3 +41,20 @@ class UsuarioContenido(models.Model):
         if self.serie:
             return f"{self.usuario.username} - {self.serie.titulo}"
         return f"{self.usuario.username}"
+
+
+class Calificacion(models.Model):
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    pelicula = models.ForeignKey(Pelicula, null=True, blank=True, on_delete=models.CASCADE)
+    serie = models.ForeignKey(Serie, null=True, blank=True, on_delete=models.CASCADE)
+    calificacion = models.PositiveSmallIntegerField()  # Valor entre 1 y 10
+
+    class Meta:
+        unique_together = ('usuario', 'pelicula', 'serie')  # Evita calificaciones duplicadas
+        verbose_name = "Calificación"
+        verbose_name_plural = "Calificaciones"
+
+    def __str__(self):
+        if self.pelicula:
+            return f"{self.usuario.username} calificó {self.pelicula.titulo} con {self.calificacion} estrellas"
+        return f"{self.usuario.username} calificó {self.serie.titulo} con {self.calificacion} estrellas"

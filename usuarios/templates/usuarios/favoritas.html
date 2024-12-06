@@ -1,42 +1,48 @@
 {% extends "ClonFlixApp/base.html" %}
-{% load static %}
-
 {% block content %}
 <section class="py-8 px-4">
-    <h2 class="text-3xl font-bold mb-4">Tus Favoritos</h2>
+    <h1 class="text-4xl font-bold text-center mb-6">Contenido Marcado como favorito</h1>
 
-    <!-- Películas Favoritas -->
-    <h3 class="text-2xl font-semibold mb-2">Películas</h3>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {% for item in favoritos_peliculas %}
-            <div class="film-card-container">
-                <a href="{% url 'ClonFlixApp:detalle_pelicula' item.pelicula.id %}" class="block rounded-lg overflow-hidden transform transition duration-300 hover:scale-105">
-                    <div class="h-64 bg-cover bg-center"
-                         style="background-image: url({% if item.pelicula.image_cover %}{{ item.pelicula.image_cover.url }}{% else %}{% static 'ClonFlixApp/images/default_image.jpg' %}{% endif %});">
+    <!-- Películas favoritas -->
+    <div class="mb-10">
+        <h1 class="text-3xl font-semibold mb-6">Películas</h1>
+        {% if favoritos_peliculas %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {% for pelicula in favoritos_peliculas %}
+                    <div class="bg-gray-800 text-white rounded-lg overflow-hidden shadow-lg">
+                        <img src="{{ pelicula.pelicula.image_cover.url|default:'{% static "ClonFlixApp/images/default_image.jpg" %}' }}" alt="{{ pelicula.pelicula.titulo }}" class="w-full h-64 object-cover">
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold mb-2">{{ pelicula.pelicula.titulo }}</h3>
+                            <p class="text-sm mb-4">{{ pelicula.pelicula.sinopsis|truncatechars:100 }}</p>
+                            <a href="{% url 'ClonFlixApp:detalle_pelicula' pelicula.pelicula.id %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Ver Detalle</a>
+                        </div>
                     </div>
-                    <h3 class="movie-title-overlay">{{ item.pelicula.titulo }}</h3>
-                </a>
+                {% endfor %}
             </div>
-        {% empty %}
-            <p class="text-gray-400">No tienes películas favoritas aún.</p>
-        {% endfor %}
+        {% else %}
+            <p class="text-center text-gray-400">No has marcado ninguna película como favorita.</p>
+        {% endif %}
     </div>
 
-    <!-- Series Favoritas -->
-    <h3 class="text-2xl font-semibold mt-6 mb-2">Series</h3>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {% for item in favoritos_series %}
-            <div class="film-card-container">
-                <a href="{% url 'ClonFlixApp:detalle_serie' item.serie.id %}" class="block rounded-lg overflow-hidden transform transition duration-300 hover:scale-105">
-                    <div class="h-64 bg-cover bg-center"
-                         style="background-image: url({% if item.serie.image_cover %}{{ item.serie.image_cover.url }}{% else %}{% static 'ClonFlixApp/images/default_image.jpg' %}{% endif %});">
+    <!-- Series Vistas -->
+    <div>
+        <h1 class="text-3xl font-semibold mb-6">Series</h1>
+        {% if favoritos_series %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {% for serie in favoritos_series %}
+                    <div class="bg-gray-800 text-white rounded-lg overflow-hidden shadow-lg">
+                        <img src="{{ serie.serie.image_cover.url|default:'{% static "ClonFlixApp/images/default_image.jpg" %}' }}" alt="{{ serie.serie.titulo }}" class="w-full h-64 object-cover">
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold mb-2">{{ serie.serie.titulo }}</h3>
+                            <p class="text-sm mb-4">{{ serie.serie.sinopsis|truncatechars:100 }}</p>
+                            <a href="{% url 'ClonFlixApp:detalle_serie' serie.serie.id %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Ver Detalle</a>
+                        </div>
                     </div>
-                    <h3 class="movie-title-overlay">{{ item.serie.titulo }}</h3>
-                </a>
+                {% endfor %}
             </div>
-        {% empty %}
-            <p class="text-gray-400">No tienes series favoritas aún.</p>
-        {% endfor %}
+        {% else %}
+            <p class="text-center text-gray-400">No has marcado ninguna serie como favorita.</p>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

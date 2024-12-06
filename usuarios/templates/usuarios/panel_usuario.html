@@ -1,46 +1,54 @@
 {% extends 'clonflixapp/base.html' %}
 
 {% block content %}
-<div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-3xl mx-auto mt-10">
-    <h2 class="text-center text-3xl font-bold mb-2">Panel de Usuario</h2>
+<div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-3xl mx-auto mt-20"> <!-- Ajustado margen superior a mt-20 -->
+    <h2 class="text-center text-3xl font-bold mb-4">Panel de Usuario</h2>
 
     <!-- Texto de bienvenida -->
-    <p class="text-center text-xl font-semibold mb-6">Bienvenido, <span class="text-green-400">{{ user.username }}</span>!</p>
+    <p class="text-center text-4xl font-bold mb-4"> <!-- Ajustado tamaño del texto a text-4xl -->
+        Bienvenido, <span class="text-pink-400">{{ user.username }}</span>!
+    </p>
 
-    <p class="text-center mb-6">Este es tu panel personal. Como usuario registrado, desde la cabecera de la página, vas a poder agregar y borrar tus películas o series favoritas. Ver el historial del contenido que hayas visto, visualizar estadísticas del tiempo que pasas viendo ClonFlix y explorar todo el contenido de la web.</p>
+    <p class="text-center mb-6 text-sm md:text-base"> <!-- Texto ajustado para pantallas pequeñas y medianas -->
+        Este es tu panel personal. Como usuario registrado, desde la cabecera de la página, vas a poder agregar y borrar tus películas o series favoritas. Ver el historial del contenido que hayas visto, visualizar estadísticas del tiempo que pasas viendo ClonFlix y explorar todo el contenido de la web.
+    </p>
 
     <!-- Información del panel con más espacio para los textos -->
-    <div class="space-y-5">
+    <div class="space-y-4"> <!-- Reducido espacio entre secciones -->
         <!-- Nuevo apartado para Series -->
-        <div class="bg-gray-700 p-5 rounded-lg text-center h-auto max-w-xl mx-auto">
-            <h3 class="text-xl font-semibold mb-2">Series</h3>
-            <p class="text-gray-300 line-clamp-2">Explora el catálogo completo de todas las series.</p>
+        <div class="bg-gray-700 p-4 rounded-lg text-center h-auto max-w-xl mx-auto">
+            <h3 class="text-lg font-semibold mb-2">Series</h3>
+            <p class="text-gray-300">Explora el catálogo completo de todas las series.</p>
         </div>
 
         <!-- Nuevo apartado para Películas -->
-        <div class="bg-gray-700 p-5 rounded-lg text-center h-auto max-w-xl mx-auto">
-            <h3 class="text-xl font-semibold mb-2">Películas</h3>
-            <p class="text-gray-300 line-clamp-2">Explora el catálogo completo de todas las películas.</p>
+        <div class="bg-gray-700 p-4 rounded-lg text-center h-auto max-w-xl mx-auto">
+            <h3 class="text-lg font-semibold mb-2">Películas</h3>
+            <p class="text-gray-300">Explora el catálogo completo de todas las películas.</p>
         </div>
 
-        <div class="bg-gray-700 p-5 rounded-lg text-center h-auto max-w-xl mx-auto">
-            <h3 class="text-xl font-semibold mb-2">Favoritos</h3>
-            <p class="text-gray-300 line-clamp-2">Gestiona aquí tus películas favoritas.</p>
+        <!-- Favoritos -->
+        <div class="bg-gray-700 p-4 rounded-lg text-center h-auto max-w-xl mx-auto">
+            <h3 class="text-lg font-semibold mb-2">Favoritos</h3>
+            <p class="text-gray-300">Gestiona aquí tus películas favoritas.</p>
         </div>
-        <div class="bg-gray-700 p-5 rounded-lg text-center h-auto max-w-xl mx-auto">
-            <h3 class="text-xl font-semibold mb-2">(Ya vistas) Historial de Visualización</h3>
-            <p class="text-gray-300 line-clamp-2">Revisa el historial de contenido que has marcado como visto.</p>
+
+        <!-- Historial -->
+        <div class="bg-gray-700 p-4 rounded-lg text-center h-auto max-w-xl mx-auto">
+            <h3 class="text-lg font-semibold mb-2">(Ya vistas) Historial de Visualización</h3>
+            <p class="text-gray-300">Revisa el historial de contenido que has marcado como visto.</p>
         </div>
-        <div class="bg-gray-700 p-5 rounded-lg text-center h-auto max-w-xl mx-auto">
-            <h3 class="text-xl font-semibold mb-2">Tus Estadísticas</h3>
-            <p class="text-gray-300 line-clamp-2">Analiza tus estadísticas personalizadas.</p>
+
+        <!-- Estadísticas -->
+        <div class="bg-gray-700 p-4 rounded-lg text-center h-auto max-w-xl mx-auto">
+            <h3 class="text-lg font-semibold mb-2">Tus Estadísticas</h3>
+            <p class="text-gray-300">Analiza tus estadísticas personalizadas.</p>
         </div>
 
         <!-- Botón para empezar la aventura -->
-        <div class="text-center mt-6">
-            <a href="{% url 'ClonFlixApp:index' %}" class="inline-block bg-green-500 text-white py-2 px-4 rounded-lg font-semibold text-xl hover:bg-purple-400 transition duration-300">
-    Empieza tu aventura en ClonFlix
-</a>
+        <div class="text-center mt-4"> <!-- Reducido margen superior -->
+            <a href="{% url 'usuarios:registro' %}" class="bg-pink-400 hover:bg-pink-500 text-white font-bold py-3 px-6 rounded-lg text-lg">
+                Empieza tu aventura en MiFlix
             </a>
         </div>
     </div>

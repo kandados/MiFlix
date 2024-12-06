@@ -1,32 +1,24 @@
 {% extends "ClonFlixApp/base.html" %}
 {% block content %}
 
-<section class="py-8 px-4">
+<section class="py-8 px-4 mt-32">
     <h1 class="text-4xl font-bold text-center mb-8">Gestión de Contenidos</h1>
 
     <!-- Formulario de búsqueda -->
-    <div class="flex justify-center mb-8 space-x-2">
-        <form method="get" action="{% url 'usuarios:gestion_contenidos' %}" class="flex items-center">
+    <div class="flex justify-center mb-8">
+        <form method="get" action="{% url 'usuarios:gestion_contenidos' %}" class="flex items-center space-x-2">
             <input
                 type="text"
                 name="q"
                 value="{{ query|default:'' }}"
-                placeholder="Buscar por título..."
-                class="w-64 p-2 rounded-l bg-gray-900 text-white border border-gray-700 focus:ring focus:ring-blue-500 placeholder-gray-500"
+                placeholder="Buscar por título, ID..."
+                id="search-input"
+                class="search-input h-10"
             >
-            <button
-                type="submit"
-                class="bg-green-500 text-white px-4 py-2 rounded-r hover:bg-green-600"
-            >
+            <button type="submit" class="bg-pink-500 hover:bg-pink-700 text-white font-bold px-4 h-10 rounded">
                 Buscar
             </button>
         </form>
-
-        <!-- Botón de Volver -->
-        <a href="{% url 'usuarios:gestion_contenidos' %}"
-           class="bg-purple-600 text-white font-bold px-4 py-2 rounded hover:bg-purple-700 transition duration-200">
-            Volver
-        </a>
     </div>
 
     <!-- Opciones para crear nuevo contenido -->
@@ -102,5 +94,13 @@
         </tbody>
     </table>
 </section>
+
+<!-- Script para resetear la caja de búsqueda -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById("search-input");
+        searchInput.value = ""; // Limpia el campo de búsqueda al cargar la página
+    });
+</script>
 
 {% endblock %}

@@ -261,7 +261,7 @@ def eliminar_serie(request, serie_id):
 
 
 # ============================
-# Favoritos, Ya Vistas y estadisticas Usuario Logueado
+# Favoritos, calificar, Ya Vistas y estadisticas Usuario Logueado
 # ============================
 @login_required
 def favoritas_view(request):
@@ -306,6 +306,7 @@ def marcar_como_visto(request, contenido_id, tipo):
     usuario_contenido.save()
     messages.success(request, f'{contenido.titulo} {"marcado como visto" if usuario_contenido.visto else "desmarcado como visto"}.')
     return redirect(request.META.get('HTTP_REFERER', 'usuarios:ya_vistas'))
+
 
 @login_required
 def estadisticas_usuario(request):

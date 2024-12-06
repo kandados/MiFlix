@@ -2,8 +2,7 @@
 
 {% block content %}
 <section class="py-8 px-4">
-    <h1 class="text-3xl font-bold mb-6">Películas</h1>
-
+    <h1 class="text-4xl font-bold text-center mb-6">Todas las películas</h1>
     <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4">
         {% for pelicula in peliculas %}
             <a href="{% url 'ClonFlixApp:detalle_pelicula' pelicula.id %}" class="group">

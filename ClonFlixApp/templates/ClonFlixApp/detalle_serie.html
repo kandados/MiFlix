@@ -1,7 +1,7 @@
 {% extends "ClonFlixApp/base.html" %}
 {% load static %}
 {% block content %}
-<section class="py-8 px-4">
+<section class="py-8 px-4 mt-32"> <!-- Añadimos mt-32 -->
     <!-- Botón de Volver centrado -->
     <div class="flex justify-center mb-4">
         <button onclick="history.back()" class="bg-gray-700 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded">
@@ -31,14 +31,31 @@
 
             <!-- Detalles de la serie -->
             <div>
-                <h2 class="text-2xl font-semibold mb-2">Detalles</h2>
-                <p><strong>Género:</strong> {{ serie.genero }}</p>
-                <p><strong>Director:</strong> {{ serie.director }}</p>
-                <p><strong>Temporadas:</strong> {{ serie.temporadas_totales }}</p>
-                <p><strong>Capítulos totales:</strong> {{ serie.capitulos_totales }}</p>
-                <p><strong>Año de estreno:</strong> {{ serie.estreno }}</p>
-                <p><strong>Calificación de Usuario:</strong> {{ serie.calificacion_usuario }} / 10</p>
-            </div>
+    <h2 class="text-2xl font-semibold mb-2">Detalles</h2>
+    <p><strong>Género:</strong> {{ serie.genero }}</p>
+    <p><strong>Director:</strong> {{ serie.director }}</p>
+    <p><strong>Temporadas:</strong> {{ serie.temporadas_totales }}</p>
+    <p><strong>Capítulos Totales:</strong> {{ serie.capitulos_totales }}</p>
+    <p><strong>Año de estreno:</strong> {{ serie.estreno }}</p>
+    <p><strong>Vistas Totales:</strong> {{ serie.vistas_totales }}</p>
+
+    <!-- Calificaciones -->
+    <p><strong>Calificación Promedio:</strong>
+        {% if promedio_calificacion %}
+            {{ promedio_calificacion }} / 10
+        {% else %}
+            No calificada aún
+        {% endif %}
+    </p>
+    <p><strong>Tu Calificación:</strong>
+        {% if tu_calificacion %}
+            {{ tu_calificacion }} / 10
+        {% else %}
+            No has calificado esta serie aún
+        {% endif %}
+    </p>
+</div>
+
 
             <!-- Botones de interacción solo para usuarios logueados -->
             {% if user.is_authenticated %}
@@ -47,7 +64,7 @@
                     <form action="{% url 'usuarios:marcar_favorito' serie.id 'serie' %}" method="post" class="inline-block">
                         {% csrf_token %}
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            {% if serie.id in favoritos_ids %}Quitar de Favoritos{% else %}Marcar como Favorito{% endif %}
+                            Marcar como favorito
                         </button>
                     </form>
                     <!-- Marcar como Visto -->
@@ -57,6 +74,10 @@
                             Marcar como Visto
                         </button>
                     </form>
+                    <!-- Calificar -->
+                    <a href="{% url 'ClonFlixApp:calificar_contenido' serie.id 'serie' %}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
+                        Calificar
+                    </a>
                 </div>
             {% endif %}
         </div>

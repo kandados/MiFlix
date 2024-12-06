@@ -3,6 +3,9 @@ from django.db import models
 
 
 
+
+
+
 class Pelicula(models.Model):
     id = models.AutoField(primary_key=True)
     titulo = models.CharField(max_length=255)

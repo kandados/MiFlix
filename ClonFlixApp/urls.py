@@ -22,4 +22,7 @@ urlpatterns = [
     # Novedades y series recientes
     path('novedades-mas-vistas/', views.novedades_mas_vistas, name='novedades_mas_vistas'),
     path('series-recientes/', views.series_recientes, name='series_recientes'),
+
+# Calificar contenido
+    path('calificar/<int:contenido_id>/<str:tipo>/', views.calificar_contenido, name='calificar_contenido'),
 ]
