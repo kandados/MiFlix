@@ -16,7 +16,6 @@
     <h1 class="text-5xl font-bold mb-4">{{ pelicula_destacada.titulo }}</h1>
     <p class="text-lg mb-6">{{ pelicula_destacada.descripcion_breve }}</p>
     <div class="flex space-x-4 mb-4">
-        <button class="bg-white text-black px-4 py-2 rounded shadow hover:bg-gray-200">Reproducir</button>
         <a href="{% url 'ClonFlixApp:detalle_pelicula' pelicula_destacada.id %}" class="bg-gray-700 text-white px-4 py-2 rounded shadow hover:bg-gray-600">Más información</a>
     </div>
 

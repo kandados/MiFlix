@@ -52,10 +52,10 @@
                 {% for usuario in usuarios %}
                 <tr class="border-t border-gray-700">
                     <td class="py-2 px-4">{{ usuario.username }}</td>
-                    <td class="py-2 px-4">{{ usuario.peliculas_vistas }}</td>
-                    <td class="py-2 px-4">{{ usuario.series_vistas }}</td>
+                    <td class="py-2 px-4">{{ usuario.contador_peliculas_vistas }}</td>
+                    <td class="py-2 px-4">{{ usuario.contador_series_vistas }}</td>
                     <td class="py-2 px-4">
-    <a href="{% url 'usuarios:estadisticas_usuario_admin' usuario.id %}"
+    <a href="{% url 'usuarios:estadisticas_usuario' usuario.id %}"
        class="text-green-400 hover:underline">Ver Estadísticas</a>
 </td>
                 </tr>

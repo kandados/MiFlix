@@ -5,6 +5,9 @@ from ClonFlixApp.models import Pelicula, Serie  # Asegúrate de tener UsuarioCon
 from unidecode import unidecode
 from usuarios.models import UsuarioContenido
 from django.db.models import Avg
+from django.db.models import Count
+from usuarios.models import UsuarioPelicula, UsuarioSerie
+
 
 # Para el video de la pagina de inicio
 def video_page(request):
@@ -36,14 +39,20 @@ def index(request):
     return render(request, 'ClonFlixApp/index.html', context)
 
 
+
 # Novedades más vistas
 def novedades_mas_vistas(request):
-    novedades_peliculas = Pelicula.objects.order_by('-calificacion_usuario', '-vistas_totales')[:12]
-    novedades_series = Serie.objects.order_by('-calificacion_usuario', '-vistas_totales')[:12]
+    # Películas más vistas
+    novedades_peliculas = Pelicula.objects.order_by('-vistas_totales', '-calificacion_usuario', 'titulo')[:12]
+
+    # Series más vistas
+    novedades_series = Serie.objects.order_by('-vistas_totales', '-calificacion_usuario', 'titulo')[:12]
+
     return render(request, 'ClonFlixApp/novedades_mas_vistas.html', {
         'novedades_peliculas': novedades_peliculas,
         'novedades_series': novedades_series,
     })
+
 
 
 # Películas por género
@@ -84,18 +93,26 @@ def buscar_contenido(request):
 
 
 # Detalle de contenido
+
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.db.models import Avg
+from usuarios.models import UsuarioPelicula, UsuarioContenido
+from ClonFlixApp.models import Pelicula
+
 def detalle_pelicula(request, id):
     pelicula = get_object_or_404(Pelicula, id=id)
 
-    # Calcular la calificación promedio de la película
+    # Calcular el promedio de calificaciones
     promedio_calificacion = UsuarioContenido.objects.filter(
         pelicula=pelicula,
         calificacion__isnull=False
     ).aggregate(promedio=Avg('calificacion'))['promedio']
 
-    # Obtener la calificación del usuario actual, si existe
     tu_calificacion = None
+
     if request.user.is_authenticated:
+        # Si el usuario está logueado, buscamos su calificación
         usuario_contenido = UsuarioContenido.objects.filter(
             usuario=request.user,
             pelicula=pelicula
@@ -103,25 +120,43 @@ def detalle_pelicula(request, id):
         if usuario_contenido:
             tu_calificacion = usuario_contenido.calificacion
 
+        # Marcar como vista solo si está logueado
+        usuario_pelicula, created = UsuarioPelicula.objects.get_or_create(
+            usuario=request.user,
+            pelicula=pelicula
+        )
+        if not usuario_pelicula.visto:
+            usuario_pelicula.visto = True
+            usuario_pelicula.save()
+            pelicula.vistas_totales += 1
+            pelicula.save()
+
     return render(request, 'ClonFlixApp/detalle_pelicula.html', {
         'pelicula': pelicula,
         'promedio_calificacion': round(promedio_calificacion, 1) if promedio_calificacion else None,
         'tu_calificacion': tu_calificacion,
+        'usuario_autenticado': request.user.is_authenticated,  # Para mostrar botones solo a usuarios logueados
     })
 
+
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Avg
+from usuarios.models import UsuarioSerie, UsuarioContenido
+from ClonFlixApp.models import Serie
 
 def detalle_serie(request, id):
     serie = get_object_or_404(Serie, id=id)
 
-    # Calcular la calificación promedio de la serie
+    # Calcular el promedio de calificaciones
     promedio_calificacion = UsuarioContenido.objects.filter(
         serie=serie,
         calificacion__isnull=False
     ).aggregate(promedio=Avg('calificacion'))['promedio']
 
-    # Obtener la calificación del usuario actual, si existe
     tu_calificacion = None
+
     if request.user.is_authenticated:
+        # Si el usuario está logueado, buscamos su calificación
         usuario_contenido = UsuarioContenido.objects.filter(
             usuario=request.user,
             serie=serie
@@ -129,12 +164,23 @@ def detalle_serie(request, id):
         if usuario_contenido:
             tu_calificacion = usuario_contenido.calificacion
 
+        # Marcar como vista solo si está logueado
+        usuario_serie, created = UsuarioSerie.objects.get_or_create(
+            usuario=request.user,
+            serie=serie
+        )
+        if not usuario_serie.visto:
+            usuario_serie.visto = True
+            usuario_serie.save()
+            serie.vistas_totales += 1
+            serie.save()
+
     return render(request, 'ClonFlixApp/detalle_serie.html', {
         'serie': serie,
         'promedio_calificacion': round(promedio_calificacion, 1) if promedio_calificacion else None,
         'tu_calificacion': tu_calificacion,
+        'usuario_autenticado': request.user.is_authenticated,  # Para mostrar botones solo a usuarios logueados
     })
-
 
 # Vistas para series y películas
 def series_view(request):

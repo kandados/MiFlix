@@ -10,7 +10,7 @@
     </p>
 
     <p class="text-center mb-6 text-sm md:text-base"> <!-- Texto ajustado para pantallas pequeñas y medianas -->
-        Este es tu panel personal. Como usuario registrado, desde la cabecera de la página, vas a poder agregar y borrar tus películas o series favoritas. Ver el historial del contenido que hayas visto, visualizar estadísticas del tiempo que pasas viendo ClonFlix y explorar todo el contenido de la web.
+        Este es tu panel personal. Como usuario registrado, desde la cabecera de la página, vas a poder marcar y desmarcar tus películas o series y agregarlas a tus favoritas. Tambien vas a poder marcar todo el contenido que vayas viendo, tanto series como peliculas, y agregargas a ya vistas, visualizar estadísticas del tiempo que pasas viendo ClonFlix, los géneros que mas ves y explorar todo el contenido de la web.
     </p>
 
     <!-- Información del panel con más espacio para los textos -->
@@ -30,13 +30,13 @@
         <!-- Favoritos -->
         <div class="bg-gray-700 p-4 rounded-lg text-center h-auto max-w-xl mx-auto">
             <h3 class="text-lg font-semibold mb-2">Favoritos</h3>
-            <p class="text-gray-300">Gestiona aquí tus películas favoritas.</p>
+            <p class="text-gray-300">Aquí están tus películas y series favoritas.</p>
         </div>
 
         <!-- Historial -->
         <div class="bg-gray-700 p-4 rounded-lg text-center h-auto max-w-xl mx-auto">
             <h3 class="text-lg font-semibold mb-2">(Ya vistas) Historial de Visualización</h3>
-            <p class="text-gray-300">Revisa el historial de contenido que has marcado como visto.</p>
+            <p class="text-gray-300">Contenido (películas y series) que has marcado como visto.</p>
         </div>
 
         <!-- Estadísticas -->
@@ -47,7 +47,7 @@
 
         <!-- Botón para empezar la aventura -->
         <div class="text-center mt-4"> <!-- Reducido margen superior -->
-            <a href="{% url 'usuarios:registro' %}" class="bg-pink-400 hover:bg-pink-500 text-white font-bold py-3 px-6 rounded-lg text-lg">
+            <a href="{% url 'ClonFlixApp:index' %}" class="bg-pink-400 hover:bg-pink-500 text-white font-bold py-3 px-6 rounded-lg text-lg">
                 Empieza tu aventura en MiFlix
             </a>
         </div>

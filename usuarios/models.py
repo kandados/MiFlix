@@ -5,7 +5,6 @@ from ClonFlixApp.models import Pelicula, Serie
 from django.utils.timezone import now
 
 
-
 class Usuario(AbstractUser):
     """Modelo extendido de usuario para incluir roles y correo electrónico único."""
     ADMIN = 'ADMIN'
@@ -58,3 +57,33 @@ class Calificacion(models.Model):
         if self.pelicula:
             return f"{self.usuario.username} calificó {self.pelicula.titulo} con {self.calificacion} estrellas"
         return f"{self.usuario.username} calificó {self.serie.titulo} con {self.calificacion} estrellas"
+
+
+class UsuarioPelicula(models.Model):
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='peliculas_vistas')
+    pelicula = models.ForeignKey('ClonFlixApp.Pelicula', on_delete=models.CASCADE, related_name='usuarios_que_vieron')
+    visto = models.BooleanField(default=False)
+    fecha_visto = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('usuario', 'pelicula')
+        verbose_name = "Película vista por usuario"
+        verbose_name_plural = "Películas vistas por usuarios"
+
+    def __str__(self):
+        return f"{self.usuario.username} - {self.pelicula.titulo} ({'Visto' if self.visto else 'No visto'})"
+
+
+class UsuarioSerie(models.Model):
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='series_vistas')
+    serie = models.ForeignKey('ClonFlixApp.Serie', on_delete=models.CASCADE, related_name='usuarios_que_vieron')
+    visto = models.BooleanField(default=False)
+    fecha_visto = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('usuario', 'serie')
+        verbose_name = "Serie vista por usuario"
+        verbose_name_plural = "Series vistas por usuarios"
+
+    def __str__(self):
+        return f"{self.usuario.username} - {self.serie.titulo} ({'Visto' if self.visto else 'No visto'})"

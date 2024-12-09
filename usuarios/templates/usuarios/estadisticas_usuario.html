@@ -3,37 +3,37 @@
 
 <section class="py-8 px-4">
     <h1 class="text-4xl font-bold text-center mb-6">
-    Estadísticas personales de
-        <span class="text-green-400">{{ usuario.username }}</span>
-</h1>
+        Estadísticas personales de
+        <span class="text-pink-400">{{ usuario.username }}</span>
+    </h1>
 
     <!-- Métricas -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div class="bg-gray-800 p-6 rounded-lg text-center">
-            <h2 class="text-2xl font-bold text-green-400">Películas Vistas</h2>
+        <div class="bg-pink-500 p-6 rounded-lg text-center">
+            <h2 class="text-3xl font-bold text-white-400">Películas Vistas</h2>
             <p class="text-3xl font-bold">{{ peliculas_vistas }}</p>
         </div>
-        <div class="bg-gray-800 p-6 rounded-lg text-center">
-            <h2 class="text-2xl font-bold text-blue-400">Series Vistas</h2>
+        <div class="bg-pink-500 p-6 rounded-lg text-center">
+            <h2 class="text-3xl font-bold text-white-400">Series Vistas</h2>
             <p class="text-3xl font-bold">{{ series_vistas }}</p>
         </div>
     </div>
 
     <!-- Gráficas -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-gray-800 p-4 rounded-lg flex items-center justify-center" style="height: 350px; width: 450px; margin: auto;">
+        <div class="p-2 rounded-lg flex items-center justify-center" style="height: 350px; width: 450px; margin: auto;">
             <h2 class="text-xl font-bold text-center mb-4 absolute">Tiempo en Películas</h2>
             {{ chart_peliculas_tiempo|safe }}
         </div>
-        <div class="bg-gray-800 p-4 rounded-lg flex items-center justify-center" style="height: 350px; width: 450px; margin: auto;">
+        <div class="p-2 rounded-lg flex items-center justify-center" style="height: 350px; width: 450px; margin: auto;">
             <h2 class="text-xl font-bold text-center mb-4 absolute">Tiempo en Series</h2>
             {{ chart_series_tiempo|safe }}
         </div>
-        <div class="bg-gray-800 p-4 rounded-lg flex items-center justify-center" style="height: 350px; width: 450px; margin: auto;">
+        <div class="p-2 rounded-lg flex items-center justify-center" style="height: 350px; width: 450px; margin: auto;">
             <h2 class="text-xl font-bold text-center mb-4 absolute">Géneros en Películas</h2>
             {{ chart_peliculas_generos|safe }}
         </div>
-        <div class="bg-gray-800 p-4 rounded-lg flex items-center justify-center" style="height: 350px; width: 450px; margin: auto;">
+        <div class="p-2 rounded-lg flex items-center justify-center" style="height: 350px; width: 450px; margin: auto;">
             <h2 class="text-xl font-bold text-center mb-4 absolute">Géneros en Series</h2>
             {{ chart_series_generos|safe }}
         </div>

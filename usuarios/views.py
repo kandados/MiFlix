@@ -13,6 +13,8 @@ import plotly.graph_objects as go
 from django.shortcuts import render
 from django.db.models import Sum
 from plotly.graph_objects import Bar, Pie
+from usuarios.models import UsuarioSerie, UsuarioPelicula
+
 
 # ============================
 # Panel usuario
@@ -238,15 +240,21 @@ def eliminar_pelicula(request, pelicula_id):
 @login_required
 @user_passes_test(es_administrador)
 def editar_serie(request, serie_id):
+    # Obtener la serie a editar
     serie = get_object_or_404(Serie, id=serie_id)
-    if request.method == 'POST':
-        serie.titulo = request.POST.get('titulo')
-        serie.genero = request.POST.get('genero')
-        serie.save()
-        messages.success(request, 'Serie actualizada exitosamente.')
-        return redirect('usuarios:gestion_contenidos')
-    return render(request, 'usuarios/editar_serie.html', {'serie': serie})
 
+    if request.method == 'POST':
+        # Cargar el formulario con los datos enviados
+        form = SerieForm(request.POST, request.FILES, instance=serie)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Serie actualizada exitosamente.')
+            return redirect('usuarios:gestion_contenidos')  # Ajusta la redirección según tu proyecto
+    else:
+        # Cargar el formulario con los datos actuales de la serie
+        form = SerieForm(instance=serie)
+
+    return render(request, 'usuarios/editar_serie.html', {'form': form, 'serie': serie})
 
 @login_required
 @user_passes_test(es_administrador)
@@ -454,8 +462,8 @@ def graficas_y_stats(request):
 
     # Tabla de Usuarios
     usuarios = Usuario.objects.annotate(
-        peliculas_vistas=Count('mi_lista', filter=Q(mi_lista__pelicula__isnull=False, mi_lista__visto=True)),
-        series_vistas=Count('mi_lista', filter=Q(mi_lista__serie__isnull=False, mi_lista__visto=True))
+        contador_peliculas_vistas=Count('mi_lista', filter=Q(mi_lista__pelicula__isnull=False, mi_lista__visto=True)),
+        contador_series_vistas=Count('mi_lista', filter=Q(mi_lista__serie__isnull=False, mi_lista__visto=True))
     )
 
     context = {
@@ -479,30 +487,69 @@ def estadisticas_usuario_admin(request, usuario_id):
     peliculas_vistas = usuario.mi_lista.filter(pelicula__isnull=False, visto=True).count()
     series_vistas = usuario.mi_lista.filter(serie__isnull=False, visto=True).count()
 
+    # Tiempo dedicado (Películas y Series)
+    tiempo_peliculas = usuario.mi_lista.filter(pelicula__isnull=False, visto=True).aggregate(total=Sum('pelicula__duracion'))['total'] or 0
+    tiempo_series = usuario.mi_lista.filter(serie__isnull=False, visto=True).aggregate(total=Sum('serie__duracion_media_capitulo'))['total'] or 0
+
     # Distribución de géneros (Películas)
     peliculas_generos = usuario.mi_lista.filter(pelicula__isnull=False, visto=True).values('pelicula__genero').annotate(total=Count('pelicula__genero'))
     series_generos = usuario.mi_lista.filter(serie__isnull=False, visto=True).values('serie__genero').annotate(total=Count('serie__genero'))
 
-    # Gráficos
-    peliculas_chart = go.Bar(
-        x=[item['pelicula__genero'] for item in peliculas_generos],
-        y=[item['total'] for item in peliculas_generos],
-        name='Películas'
+    # Estilo general de las gráficas
+    layout_estilo = go.Layout(
+        paper_bgcolor='rgba(31, 41, 55, 1)',  # Fondo general
+        plot_bgcolor='rgba(31, 41, 55, 1)',   # Fondo del área de la gráfica
+        font=dict(color="white"),            # Texto blanco
+        title_font=dict(size=16, color="white"),  # Títulos más pequeños
+        height=300,  # Altura compacta
+        width=400,   # Ancho compacto
     )
 
-    series_chart = go.Bar(
-        x=[item['serie__genero'] for item in series_generos],
-        y=[item['total'] for item in series_generos],
-        name='Series'
-    )
+    # Gráfica 1: Tiempo en Películas
+    fig_peliculas_tiempo = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=tiempo_peliculas,
+        title={'text': "Minutos en Películas"},
+        gauge={
+            'axis': {'range': [None, max(tiempo_peliculas * 1.2, 1000)]},
+            'bar': {'color': "green"},
+        }
+    ))
+    fig_peliculas_tiempo.update_layout(layout_estilo)
 
-    layout = go.Layout(title='Distribución de Géneros', barmode='group')
-    fig = go.Figure(data=[peliculas_chart, series_chart], layout=layout)
-    chart_div = plot(fig, output_type='div')
+    # Gráfica 2: Tiempo en Series
+    fig_series_tiempo = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=tiempo_series,
+        title={'text': "Minutos en Series"},
+        gauge={
+            'axis': {'range': [None, max(tiempo_series * 1.2, 1000)]},
+            'bar': {'color': "blue"},
+        }
+    ))
+    fig_series_tiempo.update_layout(layout_estilo)
 
-    # Tiempo dedicado (simulación)
-    tiempo_peliculas = usuario.mi_lista.filter(pelicula__isnull=False, visto=True).aggregate(total=Sum('pelicula__duracion'))['total'] or 0
-    tiempo_series = usuario.mi_lista.filter(serie__isnull=False, visto=True).aggregate(total=Sum('serie__duracion_media_capitulo'))['total'] or 0
+    # Gráfica 3: Distribución de Géneros (Películas)
+    fig_peliculas_generos = go.Figure(data=[go.Pie(
+        labels=[item['pelicula__genero'] for item in peliculas_generos],
+        values=[item['total'] for item in peliculas_generos],
+        hole=.4  # Gráfica tipo "donut"
+    )])
+    fig_peliculas_generos.update_layout(layout_estilo, title="Distribución de Géneros en Películas")
+
+    # Gráfica 4: Distribución de Géneros (Series)
+    fig_series_generos = go.Figure(data=[go.Pie(
+        labels=[item['serie__genero'] for item in series_generos],
+        values=[item['total'] for item in series_generos],
+        hole=.4  # Gráfica tipo "donut"
+    )])
+    fig_series_generos.update_layout(layout_estilo, title="Distribución de Géneros en Series")
+
+    # Convertir gráficos a HTML
+    chart_peliculas_tiempo = fig_peliculas_tiempo.to_html(full_html=False)
+    chart_series_tiempo = fig_series_tiempo.to_html(full_html=False)
+    chart_peliculas_generos = fig_peliculas_generos.to_html(full_html=False)
+    chart_series_generos = fig_series_generos.to_html(full_html=False)
 
     return render(request, 'usuarios/estadisticas_usuario.html', {
         'usuario': usuario,
@@ -510,5 +557,8 @@ def estadisticas_usuario_admin(request, usuario_id):
         'series_vistas': series_vistas,
         'tiempo_peliculas': tiempo_peliculas,
         'tiempo_series': tiempo_series,
-        'chart_div': chart_div
+        'chart_peliculas_tiempo': chart_peliculas_tiempo,
+        'chart_series_tiempo': chart_series_tiempo,
+        'chart_peliculas_generos': chart_peliculas_generos,
+        'chart_series_generos': chart_series_generos,
     })

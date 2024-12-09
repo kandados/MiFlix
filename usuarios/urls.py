@@ -1,14 +1,16 @@
-from django.urls import path
+from django.urls import include, path
 from django.contrib.auth.views import LogoutView
 from . import views
 
 app_name = 'usuarios'
 
 urlpatterns = [
+    #Incluimos las urls de ClonFlixApp
+    path('', include('ClonFlixApp.urls')),
     # Autenticación
     path('registro/', views.registro, name='registro'),
     path('login/', views.login_view, name='login'),
-    path('logout/', LogoutView.as_view(next_page='usuarios:login'), name='logout'),
+    path('logout/', LogoutView.as_view(), name='logout'),
     path('inicio-personalizado/', views.inicio_personalizado, name='inicio_personalizado'),
 
     # Panel de administración
