@@ -16,7 +16,10 @@ CSRF_TRUSTED_ORIGINS = [
 
 ALLOWED_HOSTS = ['violent-flossie-kandados-48df4464.koyeb.app',
                  '127.0.0.1',
-                 'localhost']
+                 'localhost',
+                 '0.0.0.0',
+                 '192.168.1.69'
+                 ]
 
 # Application definition
 INSTALLED_APPS = [
