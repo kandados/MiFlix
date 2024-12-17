@@ -29,7 +29,7 @@ class UsuarioContenido(models.Model):
     fecha_agregado = models.DateTimeField(default=now)
     favorito = models.BooleanField(default=False)
     visto = models.BooleanField(default=False)
-    calificacion = models.FloatField(null=True, blank=True)
+    calificacion = models.IntegerField(null=True, blank=True)
 
     class Meta:
         unique_together = ('usuario', 'pelicula', 'serie')

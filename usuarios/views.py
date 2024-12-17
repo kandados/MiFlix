@@ -291,29 +291,61 @@ def ya_vistas_view(request):
 
 @login_required
 def marcar_favorito(request, contenido_id, tipo):
-    contenido = get_object_or_404(Pelicula if tipo == 'pelicula' else Serie, id=contenido_id)
-    usuario_contenido, _ = UsuarioContenido.objects.get_or_create(
+    # Determinar si es película o serie
+    modelo = Pelicula if tipo == 'pelicula' else Serie
+    contenido = get_object_or_404(modelo, id=contenido_id)
+
+    # Obtener o crear un registro en UsuarioContenido
+    usuario_contenido, created = UsuarioContenido.objects.get_or_create(
         usuario=request.user,
         pelicula=contenido if tipo == 'pelicula' else None,
         serie=contenido if tipo == 'serie' else None,
     )
+
+    # Cambiar solo el estado de "favorito"
     usuario_contenido.favorito = not usuario_contenido.favorito
     usuario_contenido.save()
+
+    # Mensaje de confirmación
     messages.success(request, f'{contenido.titulo} {"añadido a" if usuario_contenido.favorito else "eliminado de"} tus favoritos.')
-    return redirect(request.META.get('HTTP_REFERER', 'usuarios:favoritas'))
+
+    # Redirigir a la página previa
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @login_required
 def marcar_como_visto(request, contenido_id, tipo):
-    contenido = get_object_or_404(Pelicula if tipo == 'pelicula' else Serie, id=contenido_id)
-    usuario_contenido, _ = UsuarioContenido.objects.get_or_create(
+    # Verifica si el tipo es película o serie
+    if tipo not in ['pelicula', 'serie']:
+        messages.error(request, 'Tipo de contenido no válido.')
+        return redirect('usuarios:ya_vistas')
+
+    # Obtén el contenido según el tipo
+    modelo = Pelicula if tipo == 'pelicula' else Serie
+    contenido = get_object_or_404(modelo, id=contenido_id)
+
+    # Crea o actualiza el registro en UsuarioContenido
+    usuario_contenido, created = UsuarioContenido.objects.get_or_create(
         usuario=request.user,
         pelicula=contenido if tipo == 'pelicula' else None,
         serie=contenido if tipo == 'serie' else None,
     )
-    usuario_contenido.visto = not usuario_contenido.visto
+
+    # Alternar el estado de "visto"
+    if not usuario_contenido.visto:  # Si aún no está marcado como visto
+        usuario_contenido.visto = True
+        contenido.vistas_totales += 1  # Incrementar vistas totales
+        contenido.save()  # Guardar en el modelo
+        messages.success(request, f'{contenido.titulo} ha sido marcado como visto.')
+    else:  # Si ya estaba marcado como visto
+        usuario_contenido.visto = False
+        contenido.vistas_totales = max(contenido.vistas_totales - 1, 0)  # Restar vistas sin ir por debajo de 0
+        contenido.save()
+        messages.success(request, f'{contenido.titulo} ha sido desmarcado como visto.')
+
     usuario_contenido.save()
-    messages.success(request, f'{contenido.titulo} {"marcado como visto" if usuario_contenido.visto else "desmarcado como visto"}.')
-    return redirect(request.META.get('HTTP_REFERER', 'usuarios:ya_vistas'))
+
+    # Redirigir a la página previa o a ya vistas
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
 @login_required

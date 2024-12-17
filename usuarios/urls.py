@@ -37,7 +37,7 @@ urlpatterns = [
     path('ya-vistas/', views.ya_vistas_view, name='ya_vistas'),
     path('estadisticas-usuario/', views.estadisticas_usuario, name='estadisticas_usuario'),
 
-    # Marcar como favorito o visto
+    # Marcar como favorita , vista o calificar
     path('contenido/<int:contenido_id>/favorito/<str:tipo>/', views.marcar_favorito, name='marcar_favorito'),
     path('contenido/<int:contenido_id>/visto/<str:tipo>/', views.marcar_como_visto, name='marcar_como_visto'),
 

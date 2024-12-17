@@ -47,13 +47,15 @@
                         No calificada aún
                     {% endif %}
                 </p>
-                <p><strong>Tu Calificación:</strong>
-                    {% if tu_calificacion %}
-                        {{ tu_calificacion }} / 10
-                    {% else %}
-                        No has calificado esta serie aún
-                    {% endif %}
-                </p>
+                {% if user.is_authenticated %}
+                    <p><strong>Tu Calificación:</strong>
+                        {% if tu_calificacion %}
+                            {{ tu_calificacion }} / 10
+                        {% else %}
+                            No has calificado esta serie aún
+                        {% endif %}
+                    </p>
+                {% endif %}
             </div>
 
             <!-- Botones de interacción -->
@@ -62,42 +64,45 @@
                     <!-- Marcar como Favorito -->
                     <form action="{% url 'usuarios:marcar_favorito' serie.id 'serie' %}" method="post">
                         {% csrf_token %}
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Marcar como favorito
+                        <button type="submit" class="{% if es_favorito %}bg-gray-300 hover:bg-gray-400 text-gray-800{% else %}bg-blue-500 hover:bg-blue-700 text-white{% endif %} font-bold py-2 px-4 rounded button-fixed-width">
+                            {% if es_favorito %}Quitar de Favoritos{% else %}Agregar a Favoritos{% endif %}
                         </button>
                     </form>
+
                     <!-- Marcar como Visto -->
                     <form action="{% url 'usuarios:marcar_como_visto' serie.id 'serie' %}" method="post">
                         {% csrf_token %}
-                        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                            Marcar como Visto
+                        <button type="submit" class="{% if es_visto %}bg-gray-300 hover:bg-gray-400 text-gray-800{% else %}bg-green-500 hover:bg-green-700 text-white{% endif %} font-bold py-2 px-4 rounded button-fixed-width">
+                            {% if es_visto %}Quitar de Vistas{% else %}Marcar como Visto{% endif %}
                         </button>
                     </form>
-                    <!-- Botón para abrir el Modal -->
-                    <button onclick="openModal()" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
-                        Calificar
+
+                    <!-- Botón para Calificar o Cambiar Calificación -->
+                    <button onclick="openModal()" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded button-fixed-width">
+                        {% if ya_calificado %}Cambiar Calificación{% else %}Calificar{% endif %}
                     </button>
                 </div>
+            {% else %}
+                <p class="text-yellow-400">Inicia sesión para gestionar favoritos y marcar como visto.</p>
             {% endif %}
         </div>
     </div>
 </section>
 
 <!-- Modal para Calificar -->
-<div id="modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center hidden">
-    <div class="bg-gray-800 text-white rounded-lg p-6 w-96">
-        <h2 class="text-2xl font-bold mb-4">Califica esta serie</h2>
-        <form method="POST" action="{% url 'ClonFlixApp:detalle_serie' serie.id %}">
+<div id="calificarModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-gray-800 text-white p-6 rounded shadow-lg w-96">
+        <h2 class="text-xl font-semibold mb-4">Calificar</h2>
+        <form method="POST" action="{% url 'ClonFlixApp:calificar_contenido' serie.id 'serie' %}">
             {% csrf_token %}
-            <label for="calificacion" class="block text-sm font-medium mb-2">Tu calificación (1 a 10):</label>
-            <input type="number" name="calificacion" id="calificacion" class="w-full bg-gray-900 text-white border border-gray-600 p-2 rounded mb-4" min="1" max="10" required>
-            <div class="flex justify-end gap-4">
-                <button type="button" onclick="closeModal()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    Cancelar
-                </button>
-                <button type="submit" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
-                    Enviar
-                </button>
+            {% if ya_calificado %}
+                <p class="text-yellow-400 mb-4">Ya has calificado esta serie. ¿Quieres cambiar tu calificación?</p>
+            {% endif %}
+            <label for="calificacion" class="block text-white font-bold mb-2">Escribe tu calificación del 0 al 10:</label>
+            <input type="number" name="calificacion" id="calificacion" min="0" max="10" class="w-full bg-gray-700 text-white border-gray-600 rounded-lg p-2" placeholder="Califica del 0 al 10" required>
+            <div class="mt-4 flex justify-end">
+                <button type="button" class="bg-gray-600 text-white px-4 py-2 rounded mr-2 hover:bg-gray-500" onclick="closeModal()">Cancelar</button>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Guardar</button>
             </div>
         </form>
     </div>
@@ -105,11 +110,11 @@
 
 <script>
     function openModal() {
-        document.getElementById('modal').classList.remove('hidden');
+        document.getElementById('calificarModal').classList.remove('hidden');
     }
 
     function closeModal() {
-        document.getElementById('modal').classList.add('hidden');
+        document.getElementById('calificarModal').classList.add('hidden');
     }
 </script>
 {% endblock %}

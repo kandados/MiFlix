@@ -89,3 +89,12 @@ footer {
 }
 
 
+/* Clase para fijar el ancho de los botones */
+.button-fixed-width {
+    width: 150px; /* Ajusta este valor según tus necesidades */
+    text-align: center;
+    display: inline-block; /* Asegura que el texto quede alineado */
+    padding: 10px; /* Ajusta el espacio interno para mayor comodidad */
+    border-radius: 5px; /* Bordes redondeados para consistencia */
+    font-weight: bold; /* Fuente en negrita para los botones */
+}
