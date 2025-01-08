@@ -1,6 +1,6 @@
-{% extends "ClonFlixApp/base.html" %}
+{% extends "ClonFlixApp/base.html" %} <!-- Aprovechamos el sistema de plantillas django que nos deja que una plantilla base pueda ser heredada por otras plantillas para aprovechar una estructura general y asi evitamos repetir mucho codigo -->
 {% load static %}
-
+<!-- Pagina inicial o index.html -->
 {% block content %}
 <!-- Video destacado -->
 <video autoplay loop muted id="featured-video"
@@ -118,7 +118,7 @@
                 </div>
             </a>
         {% empty %}
-            <p class="text-gray-500">No se encontraron series mejor valoradas.</p>
+            <p class="text-gray-500">No se encontraron series recientes.</p>
         {% endfor %}
     </div>
 </section>

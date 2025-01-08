@@ -7,6 +7,7 @@ urlpatterns = [
     # Página principal
     path('', views.index, name='index'),
     path('video/', views.video_page, name='video_page'),
+
     # Rutas de películas
     path('peliculas/', views.peliculas_view, name='peliculas'),
     path('detalle_pelicula/<int:id>/', views.detalle_pelicula, name='detalle_pelicula'),

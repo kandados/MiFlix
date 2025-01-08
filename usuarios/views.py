@@ -8,11 +8,10 @@ from django.db.models import Count
 from django.db.models import Q
 from ClonFlixApp.forms import PeliculaForm
 from ClonFlixApp.forms import SerieForm
-from plotly.offline import plot
 import plotly.graph_objects as go
 from django.shortcuts import render
 from django.db.models import Sum
-from plotly.graph_objects import Bar, Pie
+
 from usuarios.models import UsuarioSerie, UsuarioPelicula
 
 
@@ -437,6 +436,7 @@ def estadisticas_usuario(request):
 # Gráficas y Estadísticas Admin
 # ============================
 
+
 @login_required
 @user_passes_test(lambda user: user.is_staff)
 def graficas_y_stats(request):
@@ -461,38 +461,96 @@ def graficas_y_stats(request):
     grafico_usuarios = grafico_usuarios.to_html(full_html=False)
 
     # Películas más vistas
-    peliculas_mas_vistas = Pelicula.objects.annotate(
-        total_vistas=Count('usuarios_pelicula', filter=Q(usuarios_pelicula__visto=True))
-    ).order_by('-total_vistas')[:5]
+    peliculas_mas_vistas = Pelicula.objects.filter(vistas_totales__gt=0).order_by('-vistas_totales')[:5]
     peliculas_titulos = [pelicula.titulo for pelicula in peliculas_mas_vistas]
-    peliculas_vistas = [pelicula.total_vistas for pelicula in peliculas_mas_vistas]
+    peliculas_vistas = [pelicula.vistas_totales for pelicula in peliculas_mas_vistas]
 
-    grafico_peliculas = go.Figure(data=[go.Bar(x=peliculas_titulos, y=peliculas_vistas)])
+    grafico_peliculas = go.Figure(data=[
+        go.Bar(
+            y=peliculas_titulos,
+            x=peliculas_vistas,
+            orientation='h',
+            marker=dict(color='rgba(58, 71, 80, 0.6)', line=dict(color='rgba(58, 71, 80, 1.0)', width=2))
+        )
+    ])
     grafico_peliculas.update_layout(
         title="Películas Más Vistas",
-        height=300,
-        paper_bgcolor="rgba(0,0,0,0)",
-        font_color="white"
+        xaxis_title="Vistas Totales",
+        yaxis_title="Películas",
+        template="plotly_dark",
+        height=400,
+        font=dict(color="white")
     )
     grafico_peliculas = grafico_peliculas.to_html(full_html=False)
 
     # Series más vistas
-    series_mas_vistas = Serie.objects.annotate(
-        total_vistas=Count('usuarios_serie', filter=Q(usuarios_serie__visto=True))
-    ).order_by('-total_vistas')[:5]
+    series_mas_vistas = Serie.objects.filter(vistas_totales__gt=0).order_by('-vistas_totales')[:5]
     series_titulos = [serie.titulo for serie in series_mas_vistas]
-    series_vistas = [serie.total_vistas for serie in series_mas_vistas]
+    series_vistas = [serie.vistas_totales for serie in series_mas_vistas]
 
-    grafico_series = go.Figure(data=[go.Bar(x=series_titulos, y=series_vistas)])
+    grafico_series = go.Figure(data=[
+        go.Bar(
+            y=series_titulos,
+            x=series_vistas,
+            orientation='h',
+            marker=dict(color='rgba(246, 78, 139, 0.6)', line=dict(color='rgba(246, 78, 139, 1.0)', width=2))
+        )
+    ])
     grafico_series.update_layout(
         title="Series Más Vistas",
-        height=300,
-        paper_bgcolor="rgba(0,0,0,0)",
-        font_color="white"
+        xaxis_title="Vistas Totales",
+        yaxis_title="Series",
+        template="plotly_dark",
+        height=400,
+        font=dict(color="white")
     )
     grafico_series = grafico_series.to_html(full_html=False)
 
-    # Tabla de Usuarios
+    # Películas y series favoritas
+    peliculas_favoritas = Pelicula.objects.annotate(
+        total_favoritos=Count('usuarios_pelicula', filter=Q(usuarios_pelicula__favorito=True))
+    ).filter(total_favoritos__gt=0).order_by('-total_favoritos')[:5]
+
+    series_favoritas = Serie.objects.annotate(
+        total_favoritos=Count('usuarios_serie', filter=Q(usuarios_serie__favorito=True))
+    ).filter(total_favoritos__gt=0).order_by('-total_favoritos')[:5]
+
+    peliculas_titulos_fav = [pelicula.titulo for pelicula in peliculas_favoritas]
+    peliculas_favoritos = [pelicula.total_favoritos for pelicula in peliculas_favoritas]
+
+    series_titulos_fav = [serie.titulo for serie in series_favoritas]
+    series_favoritos = [serie.total_favoritos for serie in series_favoritas]
+
+    grafico_favoritos = go.Figure()
+
+    grafico_favoritos.add_trace(go.Bar(
+        y=peliculas_titulos_fav,
+        x=peliculas_favoritos,
+        name='Películas Favoritas',
+        orientation='h',
+        marker=dict(color='rgba(0, 204, 150, 0.6)', line=dict(color='rgba(0, 204, 150, 1.0)', width=2))
+    ))
+
+    grafico_favoritos.add_trace(go.Bar(
+        y=series_titulos_fav,
+        x=series_favoritos,
+        name='Series Favoritas',
+        orientation='h',
+        marker=dict(color='rgba(255, 102, 102, 0.6)', line=dict(color='rgba(255, 102, 102, 1.0)', width=2))
+    ))
+
+    grafico_favoritos.update_layout(
+        title="Películas y Series Favoritas",
+        xaxis_title="Número de Favoritos",
+        yaxis_title="Contenidos",
+        barmode='group',
+        template="plotly_dark",
+        height=400,
+        font=dict(color="white")
+    )
+    grafico_favoritos = grafico_favoritos.to_html(full_html=False)
+
+    # Tabla de usuarios
     usuarios = Usuario.objects.annotate(
         contador_peliculas_vistas=Count('mi_lista', filter=Q(mi_lista__pelicula__isnull=False, mi_lista__visto=True)),
         contador_series_vistas=Count('mi_lista', filter=Q(mi_lista__serie__isnull=False, mi_lista__visto=True))
@@ -505,7 +563,8 @@ def graficas_y_stats(request):
         'grafico_usuarios': grafico_usuarios,
         'grafico_peliculas': grafico_peliculas,
         'grafico_series': grafico_series,
-        'usuarios': usuarios,  # Para listar usuarios en la tabla
+        'grafico_favoritos': grafico_favoritos,
+        'usuarios': usuarios,
     }
 
     return render(request, 'usuarios/graficas_y_stats.html', context)

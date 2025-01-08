@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 <section class="py-8 px-4 mt-32">
-    <!-- Botón de Volver centrado -->
+    <!-- Botón volver -->
     <div class="flex justify-center mb-4">
         <button onclick="history.back()" class="bg-gray-700 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded">
             Volver
@@ -19,7 +19,7 @@
             {% endif %}
         </div>
 
-        <!-- Contenedor de información -->
+        <!-- Información de la película -->
         <div class="flex-grow">
             <h1 class="text-4xl font-bold mb-4">{{ pelicula.titulo }}</h1>
 
@@ -29,25 +29,25 @@
                 <p>{{ pelicula.sinopsis }}</p>
             </div>
 
-            <!-- Detalles de la película -->
-            <div>
-                <h2 class="text-2xl font-semibold mb-2">Detalles</h2>
-                <p><strong>Género:</strong> {{ pelicula.genero }}</p>
-                <p><strong>Duración:</strong> {{ pelicula.duracion }} minutos</p>
-                <p><strong>Director:</strong> {{ pelicula.director }}</p>
-                <p><strong>Actores Principales:</strong> {{ pelicula.protagonistas }}</p>
-                <p><strong>Año de estreno:</strong> {{ pelicula.estreno }}</p>
-                <p><strong>Vistas Totales:</strong> {{ pelicula.vistas_totales }}</p>
+            <!-- Si el usuario está logueado, mosatramos detalles y botones -->
+            {% if user.is_authenticated %}
+                <div>
+                    <h2 class="text-2xl font-semibold mb-2">Detalles</h2>
+                    <p><strong>Género:</strong> {{ pelicula.genero }}</p>
+                    <p><strong>Duración:</strong> {{ pelicula.duracion }} minutos</p>
+                    <p><strong>Director:</strong> {{ pelicula.director }}</p>
+                    <p><strong>Actores Principales:</strong> {{ pelicula.protagonistas }}</p>
+                    <p><strong>Año de estreno:</strong> {{ pelicula.estreno }}</p>
+                    <p><strong>Vistas Totales:</strong> {{ pelicula.vistas_totales }}</p>
 
-                <!-- Calificaciones -->
-                <p><strong>Calificación Promedio:</strong>
-                    {% if promedio_calificacion %}
-                        {{ promedio_calificacion }} / 10
-                    {% else %}
-                        No calificada aún
-                    {% endif %}
-                </p>
-                {% if user.is_authenticated %}
+                    <!-- Calificaciones -->
+                    <p><strong>Calificación Promedio:</strong>
+                        {% if promedio_calificacion %}
+                            {{ promedio_calificacion }} / 10
+                        {% else %}
+                            No calificada aún
+                        {% endif %}
+                    </p>
                     <p><strong>Tu Calificación:</strong>
                         {% if tu_calificacion %}
                             {{ tu_calificacion }} / 10
@@ -55,11 +55,9 @@
                             No has calificado esta película aún
                         {% endif %}
                     </p>
-                {% endif %}
-            </div>
+                </div>
 
-            <!-- Botones de interacción -->
-            {% if user.is_authenticated %}
+                <!-- Botones de interacción -->
                 <div class="mt-6 flex gap-4">
                     <!-- Marcar como Favorito -->
                     <form action="{% url 'usuarios:marcar_favorito' pelicula.id 'pelicula' %}" method="post" onsubmit="return manejarFormulario(this);">
@@ -77,19 +75,20 @@
                         </button>
                     </form>
 
-                    <!-- Botón para Calificar o Cambiar Calificación -->
+                    <!-- Botón para Calificar -->
                     <button onclick="openModal()" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded button-fixed-width">
                         {% if ya_calificado %}Cambiar Calificación{% else %}Calificar{% endif %}
                     </button>
                 </div>
             {% else %}
-                <p class="text-yellow-400">Inicia sesión para gestionar favoritos y marcar como visto.</p>
+                <!-- Mensaje para usuarios no logueados -->
+                <p class="text-yellow-400">Inicia sesión para acceder a los detalles completos de la película y usar todas las funcionalidades.</p>
             {% endif %}
         </div>
     </div>
 </section>
 
-<!-- Modal para Calificar -->
+<!-- Ventana modal para calificar -->
 <div id="calificarModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
     <div class="bg-gray-800 text-white p-6 rounded shadow-lg w-96">
         <h2 class="text-xl font-semibold mb-4">Calificar</h2>
@@ -110,7 +109,6 @@
 
 <script>
     async function manejarFormulario(formulario) {
-        // Evitar el envío predeterminado
         event.preventDefault();
 
         try {
@@ -123,7 +121,7 @@
             });
 
             if (respuesta.ok) {
-                location.reload(); // Recargar la página para actualizar el estado
+                location.reload();
             } else {
                 console.error("Error al procesar el formulario.");
             }
@@ -131,10 +129,9 @@
             console.error("Error de red:", error);
         }
 
-        return false; // Prevenir el comportamiento por defecto
+        return false;
     }
 
-    // Funciones para abrir y cerrar el modal
     function openModal() {
         document.getElementById('calificarModal').classList.remove('hidden');
     }

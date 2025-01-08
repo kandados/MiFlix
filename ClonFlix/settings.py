@@ -13,6 +13,8 @@ CSRF_TRUSTED_ORIGINS = [
     'https://violent-flossie-kandados-48df4464.koyeb.app',
 ]
 
+'''hay una copia de mi proyecto alojado en un docker y posteriormente subido
+ a koyeb para probarlo en internet y otra copia en un vps mio personal alojado en arsys'''
 
 ALLOWED_HOSTS = ['violent-flossie-kandados-48df4464.koyeb.app',
                  '127.0.0.1',

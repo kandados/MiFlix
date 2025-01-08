@@ -4,7 +4,7 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClonFlix</title>
+    <title>MiFlix</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flyonui@latest/dist/flyonui.min.css">
     <link rel="stylesheet" href="{% static 'ClonFlixApp/style.css' %}">
@@ -41,12 +41,12 @@
             color: #ec4899; /* Rosa de los botones */
         }
 
-        /* Ajuste dinámico de margen para ciertas páginas */
+        /* Ajustamos dinamicamente el margen para algunas paginas  */
         .adjusted-content {
             margin-top: 7rem; /* Ajusta este valor según sea necesario */
         }
 
-        /* Tamaño de la caja de texto del buscador */
+        /* aqui damos el tamano de la caja de texto del buscador */
         .search-input {
             width: 300px; /* Aumentado el tamaño de la caja de texto */
             background-color: #111; /* Fondo negro */
@@ -56,7 +56,7 @@
             border-radius: 0.375rem; /* Bordes redondeados */
         }
 
-        /* Efecto al enfocar */
+
         .search-input:focus {
             outline: none;
             border-color: #fff; /* Cambia el borde al blanco */
@@ -65,15 +65,15 @@
 </head>
 <body class="text-white">
 
-    <!-- Cabecera -->
+    <!-- la cabecera -->
     <header id="main-header" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out shadow-md">
         <div class="flex items-center justify-between px-20 py- md:px-8">
             <!-- Logo -->
             <a href="{% url 'ClonFlixApp:index' %}">
-                <img src="{% static 'ClonFlixApp/images/logo.png' %}" alt="Logo ClonFlix" class="h-36">
+                <img src="{% static 'ClonFlixApp/images/logo.png' %}" alt="Logo MiFlix" class="h-36">
             </a>
 
-            <!-- Menú hamburguesa -->
+            <!-- Menú hamburguesa para que sea lo mas responsive posible -->
             <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -137,18 +137,18 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
+    <!-- pie de pagina -->
     <footer class="text-center text-white py-4 mt-8">
     <div class="flex justify-center items-center space-x-2">
         <!-- Logo -->
-        <img src="{% static 'ClonFlixApp/images/logo.png' %}" alt="Logo ClonFlix" class="h-16">
-        <!-- Texto del footer -->
+        <img src="{% static 'ClonFlixApp/images/logo.png' %}" alt="Logo MiFlix" class="h-16">
+        <!-- Texto del pie -->
         <span>© 2024 <span class="highlight">MiFlix</span> | <span class="highlight">kandados@gmail.com</span> | Todos los derechos reservados.</span>
     </div>
 </footer>
 
 
-    <!-- Script para el comportamiento del menú -->
+    <!-- un pequeno script para el comoortamiento del menu -->
     <script>
         document.getElementById('menu-toggle').addEventListener('click', function () {
             const mobileMenu = document.getElementById('menu');

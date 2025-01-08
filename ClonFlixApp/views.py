@@ -172,7 +172,8 @@ def detalle_serie(request, id):
         'tu_calificacion': tu_calificacion,
         'es_favorito': es_favorito,
         'es_visto': es_visto,
-        'ya_calificado': ya_calificado,  # Enviamos esta variable
+        'ya_calificado': ya_calificado,
+        # Enviamos esta variable
     })
 # Vistas para series y películas
 def series_view(request):
@@ -216,6 +217,16 @@ def calificar_contenido(request, contenido_id, tipo):
         # Actualizar la calificación
         usuario_contenido.calificacion = calificacion
         usuario_contenido.save()
+
+        # Recalcular la calificación promedio
+        if tipo == 'pelicula':
+            promedio = UsuarioContenido.objects.filter(pelicula=contenido).aggregate(Avg('calificacion'))['calificacion__avg']
+            contenido.calificacion_usuario = promedio or 0  # Actualizar el campo en Pelicula
+        else:
+            promedio = UsuarioContenido.objects.filter(serie=contenido).aggregate(Avg('calificacion'))['calificacion__avg']
+            contenido.calificacion_usuario = promedio or 0  # Actualizar el campo en Serie
+
+        contenido.save()  # Guardar el promedio calculado en el modelo principal
 
         # Mensaje de confirmación
         messages.success(request, f'Has calificado {contenido.titulo} con un {calificacion}/10.')
