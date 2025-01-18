@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
-from ClonFlixApp.models import Pelicula, Serie
+from MiFlixApp.models import Pelicula, Serie
 from django.utils.timezone import now
 
 
@@ -61,7 +61,7 @@ class Calificacion(models.Model):
 
 class UsuarioPelicula(models.Model):
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='peliculas_vistas')
-    pelicula = models.ForeignKey('ClonFlixApp.Pelicula', on_delete=models.CASCADE, related_name='usuarios_que_vieron')
+    pelicula = models.ForeignKey('MiFlixApp.Pelicula', on_delete=models.CASCADE, related_name='usuarios_que_vieron')
     visto = models.BooleanField(default=False)
     fecha_visto = models.DateTimeField(auto_now_add=True)
 
@@ -76,7 +76,7 @@ class UsuarioPelicula(models.Model):
 
 class UsuarioSerie(models.Model):
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='series_vistas')
-    serie = models.ForeignKey('ClonFlixApp.Serie', on_delete=models.CASCADE, related_name='usuarios_que_vieron')
+    serie = models.ForeignKey('MiFlixApp.Serie', on_delete=models.CASCADE, related_name='usuarios_que_vieron')
     visto = models.BooleanField(default=False)
     fecha_visto = models.DateTimeField(auto_now_add=True)
 

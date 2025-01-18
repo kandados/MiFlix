@@ -1,2 +1,2 @@
-ClonFlixApp/media/movie_videos/sample_movie.mp4 filter=lfs diff=lfs merge=lfs -text
-ClonFlix/media/movie_videos/sample_movie.mp4 filter=lfs diff=lfs merge=lfs -text
+MiFlixApp/media/movie_videos/sample_movie.mp4 filter=lfs diff=lfs merge=lfs -text
+MiFlix/media/movie_videos/sample_movie.mp4 filter=lfs diff=lfs merge=lfs -text

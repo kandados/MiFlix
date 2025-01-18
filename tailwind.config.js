@@ -3,7 +3,7 @@ module.exports = {
     './templates/**/*.html',          // Plantillas HTML principales
     './static/**/*.css',             // Archivos CSS personalizados
     './**/*.py',                     // Archivos Python que usan clases dinámicas
-    './ClonFlixApp/templates/**/*.html', // Plantillas de ClonFlixApp
+    './MiFlixApp/templates/**/*.html', // Plantillas de MiFlixApp
     './usuarios/templates/**/*.html',   // Plantillas de usuarios
   ],
   theme: {

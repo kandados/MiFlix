@@ -1,6 +1,6 @@
 import os
 from django.core.files import File
-from ClonFlixApp.models import Pelicula, Serie
+from MiFlixApp.models import Pelicula, Serie
 
 def asignar_imagenes_peliculas(imagenes_dir):
     peliculas = Pelicula.objects.all()

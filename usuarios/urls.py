@@ -5,8 +5,8 @@ from . import views
 app_name = 'usuarios'
 
 urlpatterns = [
-    #Incluimos las urls de ClonFlixApp
-    path('', include('ClonFlixApp.urls')),
+    #Incluimos las urls de MiFlixApp
+    path('', include('MiFlixApp.urls')),
     # Autenticación
     path('registro/', views.registro, name='registro'),
     path('login/', views.login_view, name='login'),

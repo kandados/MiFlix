@@ -1,0 +1,32 @@
+<!-- MiFlixApp/templates/MiFlixApp/peliculas_por_genero.html -->
+{% extends "MiFlixApp/base.html" %}
+
+{% block title %}Películas de {{ genero }}{% endblock %}
+
+{% block content %}
+<section class="py-8 px-4">
+    <!-- Título del género y botón para volver -->
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-3xl font-bold">Películas de {{ genero }}</h2>
+        <a href="/" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Volver a Inicio</a>
+    </div>
+
+    <!-- Grid de películas -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {% for pelicula in peliculas %}
+            <a href="{% url 'detalle_pelicula' pelicula.id %}" class="film-card block rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 relative">
+                <!-- Imagen de la película como fondo -->
+                <div class="h-64 bg-cover bg-center" style="background-image: url('{% if pelicula.image_cover %}{{ pelicula.image_cover.url }}{% else %}{% static 'MiFlixApp/images/default_image.jpg' %}{% endif %}');">
+                    <!-- Gradiente oscuro y título dentro de la imagen -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent flex items-end p-4">
+                        <h3 class="movie-title text-xl font-bold text-white">{{ pelicula.titulo }}</h3>
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+            <!-- Mensaje cuando no hay películas disponibles -->
+            <p class="text-gray-500">No hay películas disponibles en este género.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

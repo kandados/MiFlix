@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("ClonFlixApp", "0004_alter_pelicula_options_alter_serie_options"),
+        ("MiFlixApp", "0004_alter_pelicula_options_alter_serie_options"),
         ("usuarios", "0006_usuario_is_first_login"),
     ]
 
@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                         blank=True,
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="ClonFlixApp.pelicula",
+                        to="MiFlixApp.pelicula",
                     ),
                 ),
                 (
@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
                         blank=True,
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="ClonFlixApp.serie",
+                        to="MiFlixApp.serie",
                     ),
                 ),
                 (

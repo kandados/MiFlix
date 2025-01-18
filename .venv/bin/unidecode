@@ -1,4 +1,4 @@
-#!/Users/astrodenacl/Desktop/MiFlix/ClonFlix/.venv/bin/python
+#!/Users/astrodenacl/Desktop/MiFlix/MiFlix/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

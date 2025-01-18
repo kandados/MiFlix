@@ -9,7 +9,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("ClonFlixApp", "0003_alter_pelicula_image_cover_alter_serie_image_cover"),
+        ("MiFlixApp", "0003_alter_pelicula_image_cover_alter_serie_image_cover"),
         ("usuarios", "0001_initial"),
     ]
 
@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="usuarios_pelicula",
-                to="ClonFlixApp.pelicula",
+                to="MiFlixApp.pelicula",
             ),
         ),
         migrations.AlterField(
@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="usuarios_serie",
-                to="ClonFlixApp.serie",
+                to="MiFlixApp.serie",
             ),
         ),
         migrations.AlterField(

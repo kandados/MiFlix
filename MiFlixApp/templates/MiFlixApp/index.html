@@ -1,0 +1,146 @@
+{% extends "MiFlixApp/base.html" %} <!-- Aprovechamos el sistema de plantillas django que nos deja que una plantilla base pueda ser heredada por otras plantillas para aprovechar una estructura general y asi evitamos repetir mucho codigo -->
+{% load static %}
+<!-- Pagina inicial o index.html -->
+{% block content %}
+<!-- Video destacado -->
+<video autoplay loop muted id="featured-video"
+       class="absolute left-0 w-full object-cover"
+       style="margin-top: 40px; height: 57vh; z-index: 1;">
+    <source src="/media/movie_videos/sample_movie.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+<!-- Información superpuesta sobre el video -->
+<div class="relative z-10 flex flex-col items-start justify-center"
+     style="height: 50vh; padding: 0 2rem; margin-top: 120px; color: white;">
+    <h1 class="text-5xl font-bold mb-4">{{ pelicula_destacada.titulo }}</h1>
+    <p class="text-lg mb-6">{{ pelicula_destacada.descripcion_breve }}</p>
+    <div class="flex space-x-4 mb-4">
+        <a href="{% url 'MiFlixApp:detalle_pelicula' pelicula_destacada.id %}" class="bg-gray-700 text-white px-4 py-2 rounded shadow hover:bg-gray-600">Más información</a>
+    </div>
+
+    <!-- Ícono de sonido -->
+    <div class="flex items-center">
+        <img id="audio-icon" src="{% static 'MiFlixApp/images/mute_audio.png' %}" alt="Audio Icon"
+            class="w-12 h-12 cursor-pointer hover:opacity-75">
+    </div>
+</div>
+
+<!-- Contenido principal -->
+<section class="py-4 px-4 bg-transparent" style="margin-top: 120px;">
+    <!-- Películas Recientes -->
+    <h2 class="text-2xl font-semibold mb-4">Películas Recientes</h2>
+    <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+        {% for pelicula in peliculas_recientes %}
+            <a href="{% url 'MiFlixApp:detalle_pelicula' pelicula.id %}" class="group">
+                <div class="relative bg-gray-800 rounded-lg overflow-hidden shadow-md">
+                    {% if pelicula.image_cover %}
+                        <div class="aspect-w-2 aspect-h-3">
+                            <img src="{{ pelicula.image_cover.url }}" alt="{{ pelicula.titulo }}" class="object-cover w-full h-full group-hover:opacity-75">
+                        </div>
+                    {% else %}
+                        <div class="aspect-w-2 aspect-h-3 bg-gray-600 flex items-center justify-center text-gray-400">Sin imagen</div>
+                    {% endif %}
+                    <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-2">
+                        <h3 class="text-sm font-semibold truncate">{{ pelicula.titulo }}</h3>
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+            <p class="text-gray-500">No se encontraron películas recientes.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Películas Mejor Valoradas -->
+    <h2 class="text-2xl font-semibold mt-8 mb-4">Películas Mejor Valoradas</h2>
+    <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+        {% for pelicula in peliculas_mejor_valoradas %}
+            <a href="{% url 'MiFlixApp:detalle_pelicula' pelicula.id %}" class="group">
+                <div class="relative bg-gray-800 rounded-lg overflow-hidden shadow-md">
+                    {% if pelicula.image_cover %}
+                        <div class="aspect-w-2 aspect-h-3">
+                            <img src="{{ pelicula.image_cover.url }}" alt="{{ pelicula.titulo }}" class="object-cover w-full h-full group-hover:opacity-75">
+                        </div>
+                    {% else %}
+                        <div class="aspect-w-2 aspect-h-3 bg-gray-600 flex items-center justify-center text-gray-400">Sin imagen</div>
+                    {% endif %}
+                    <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-2">
+                        <h3 class="text-sm font-semibold truncate">{{ pelicula.titulo }}</h3>
+                        <p class="text-xs">Calificación: {{ pelicula.calificacion_usuario }}</p>
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+            <p class="text-gray-500">No se encontraron películas mejor valoradas.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Series Recientes -->
+    <h2 class="text-2xl font-semibold mt-8 mb-4">Series Recientes</h2>
+    <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+        {% for serie in series_recientes %}
+            <a href="{% url 'MiFlixApp:detalle_serie' serie.id %}" class="group">
+                <div class="relative bg-gray-800 rounded-lg overflow-hidden shadow-md">
+                    {% if serie.image_cover %}
+                        <div class="aspect-w-2 aspect-h-3">
+                            <img src="{{ serie.image_cover.url }}" alt="{{ serie.titulo }}" class="object-cover w-full h-full group-hover:opacity-75">
+                        </div>
+                    {% else %}
+                        <div class="aspect-w-2 aspect-h-3 bg-gray-600 flex items-center justify-center text-gray-400">Sin imagen</div>
+                    {% endif %}
+                    <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-2">
+                        <h3 class="text-sm font-semibold truncate">{{ serie.titulo }}</h3>
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+            <p class="text-gray-500">No se encontraron series recientes.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Series Mejor Valoradas -->
+    <h2 class="text-2xl font-semibold mt-8 mb-4">Series Mejor Valoradas</h2>
+    <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+        {% for serie in series_mejor_valoradas %}
+            <a href="{% url 'MiFlixApp:detalle_serie' serie.id %}" class="group">
+                <div class="relative bg-gray-800 rounded-lg overflow-hidden shadow-md">
+                    {% if serie.image_cover %}
+                        <div class="aspect-w-2 aspect-h-3">
+                            <img src="{{ serie.image_cover.url }}" alt="{{ serie.titulo }}" class="object-cover w-full h-full group-hover:opacity-75">
+                        </div>
+                    {% else %}
+                        <div class="aspect-w-2 aspect-h-3 bg-gray-600 flex items-center justify-center text-gray-400">Sin imagen</div>
+                    {% endif %}
+                    <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-2">
+                        <h3 class="text-sm font-semibold truncate">{{ serie.titulo }}</h3>
+                        <p class="text-xs">Calificación: {{ serie.calificacion_usuario }}</p>
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+            <p class="text-gray-500">No se encontraron series recientes.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const video = document.getElementById("featured-video");
+        const audioIcon = document.getElementById("audio-icon");
+
+        // Alternar sonido al hacer clic en el ícono
+        audioIcon.addEventListener("click", function () {
+            if (video.muted) {
+                video.muted = false;
+                audioIcon.src = "{% static 'MiFlixApp/images/sound_on.png' %}";
+            } else {
+                video.muted = true;
+                audioIcon.src = "{% static 'MiFlixApp/images/mute_audio.png' %}";
+            }
+        });
+
+        video.volume = 1;
+        video.play().catch(error => console.error("Error al reproducir video:", error));
+    });
+</script>
+{% endblock %}

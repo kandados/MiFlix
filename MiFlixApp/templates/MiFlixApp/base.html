@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiFlix</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flyonui@latest/dist/flyonui.min.css">
+    <link rel="stylesheet" href="{% static 'MiFlixApp/style.css' %}">
+    <style>
+        /* Fondo general para el body */
+        body {
+            background-color: #111; /* Fondo oscuro */
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px; /* Tamaño de la cuadrícula */
+            color: #fff; /* Texto blanco */
+        }
+
+        /* Cabecera */
+        header {
+            background-color: #111; /* Mismo color que el fondo */
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px; /* Mismo tamaño de la cuadrícula */
+        }
+
+        /* Footer */
+        footer {
+            background-color: #111; /* Mismo color que el fondo */
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px; /* Mismo tamaño de la cuadrícula */
+        }
+
+        footer .highlight {
+            color: #ec4899; /* Rosa de los botones */
+        }
+
+        /* Ajustamos dinamicamente el margen para algunas paginas  */
+        .adjusted-content {
+            margin-top: 7rem; /* Ajusta este valor según sea necesario */
+        }
+
+        /* aqui damos el tamaño de la caja de texto del buscador */
+        .search-input {
+            width: 300px; /* Aumentado el tamaño de la caja de texto */
+            background-color: #111; /* Fondo negro */
+            color: #fff; /* Texto blanco */
+            border: 1px solid #333; /* Borde oscuro */
+            padding: 0.5rem; /* Espaciado interno */
+            border-radius: 0.375rem; /* Bordes redondeados */
+        }
+
+
+        .search-input:focus {
+            outline: none;
+            border-color: #fff; /* Cambia el borde al blanco */
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <!-- la cabecera -->
+    <header id="main-header" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out shadow-md">
+        <div class="flex items-center justify-between px-20 py- md:px-8">
+            <!-- Logo -->
+            <a href="{% url 'MiFlixApp:index' %}">
+                <img src="{% static 'MiFlixApp/images/logo.png' %}" alt="Logo MiFlix" class="h-36">
+            </a>
+
+        <!-- Botón menú hamburguesa -->
+<button id="menu-toggle" aria-label="Abrir menú" class="md:hidden text-white focus:outline-none focus:ring-2 focus:ring-pink-500 rounded">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+</button>
+
+            <!-- Menú de navegación -->
+            <nav id="menu" class="hidden md:flex space-x-6 items-center">
+                <a href="{% url 'MiFlixApp:index' %}" class="hover:text-pink-300">Inicio</a>
+                <a href="{% url 'MiFlixApp:series' %}" class="hover:text-pink-300">Series</a>
+                <a href="{% url 'MiFlixApp:peliculas' %}" class="hover:text-pink-300">Películas</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'usuarios:favoritos' %}" class="hover:text-pink-300">Favoritos</a>
+                    <a href="{% url 'usuarios:ya_vistas' %}" class="hover:text-pink-300">Ya Vistas</a>
+                    <a href="{% url 'usuarios:estadisticas_usuario' %}" class="hover:text-pink-300">Tus Estadísticas</a>
+                {% endif %}
+                <a href="{% url 'MiFlixApp:novedades_mas_vistas' %}" class="hover:text-pink-300">Novedades Más Vistas</a>
+            </nav>
+
+            <!-- Buscador -->
+            <form action="{% url 'MiFlixApp:buscar_contenido' %}" method="get" class="hidden md:flex items-center space-x-2">
+                <input
+                    type="text"
+                    name="q"
+                    placeholder="Buscar..."
+                    class="search-input"
+                >
+                <button type="submit" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-1 px-2 rounded">
+                    Buscar
+                </button>
+            </form>
+
+            <!-- Usuario -->
+            <div class="hidden md:flex flex-col items-end space-y-2">
+                {% if user.is_authenticated %}
+                    <span class="text-green-500 font-semibold">Bienvenido, {{ user.username }}!</span>
+                    <form action="{% url 'usuarios:logout' %}" method="post" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-pink-400 hover:bg-pink-500 text-white font-bold py-1 px-2 rounded">
+                            Logout
+                        </button>
+                    </form>
+                    {% if user.is_staff %}
+                        <!-- Botón Panel Admin -->
+                        <a href="{% url 'usuarios:panel_admin' %}" class="bg-pink-400 hover:bg-pink-500 text-white font-bold py-1 px-2 rounded">
+                            Panel de Administración
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <div class="flex space-x-2">
+                        <a href="{% url 'usuarios:login' %}" class="bg-white-400 hover:bg-pink-500 text-white font-bold py-1 px-2 rounded">Login</a>
+                        <a href="{% url 'usuarios:registro' %}" class="bg-white-400 hover:bg-pink-500 text-white font-bold py-1 px-2 rounded">Registro</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="{% if request.resolver_match.url_name in 'series peliculas favoritos ya_vistas estadisticas_usuario novedades_mas_vistas' %}adjusted-content{% endif %} px-4 sm:px-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- pie de pagina -->
+    <footer class="text-center text-white py-4 mt-8">
+    <div class="flex justify-center items-center space-x-2">
+        <!-- Logo -->
+        <img src="{% static 'MiFlixApp/images/logo.png' %}" alt="Logo MiFlix" class="h-16">
+        <!-- Texto del pie -->
+        <span>© 2024 <span class="highlight">MiFlix</span> | <span class="highlight">kandados@gmail.com</span> | Todos los derechos reservados.</span>
+    </div>
+</footer>
+
+
+    <!-- script para el comoortamiento del menu -->
+    <script>
+        document.getElementById('menu-toggle').addEventListener('click', function () {
+            const mobileMenu = document.getElementById('menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{% extends "MiFlixApp/base.html" %}
+{% block title %}Recomendaciones para Usuarios{% endblock %}
+
+{% block content %}
+<section class="py-8 px-4">
+    <h2 class="text-3xl font-bold mb-4">Recomendaciones</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {% for contenido in recomendaciones %}
+            <a href="{% url 'detalle_contenido' contenido.tipo contenido.id %}" class="film-card block rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 relative">
+                <div class="h-64 bg-cover bg-center"
+                     style="background-image: url('{% if contenido.image_cover %}{{ contenido.image_cover.url }}{% else %}{% static 'MiFlixApp/images/default_image.jpg' %}{% endif %}');">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent flex items-end p-4">
+                        <h3 class="movie-title text-xl font-bold text-white">{{ contenido.titulo }}</h3>
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+            <p class="text-gray-500">No hay recomendaciones disponibles en este momento.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

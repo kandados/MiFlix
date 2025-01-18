@@ -3,11 +3,11 @@ from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Usuario, UsuarioContenido
-from ClonFlixApp.models import Pelicula, Serie
+from MiFlixApp.models import Pelicula, Serie
 from django.db.models import Count
 from django.db.models import Q
-from ClonFlixApp.forms import PeliculaForm
-from ClonFlixApp.forms import SerieForm
+from MiFlixApp.forms import PeliculaForm
+from MiFlixApp.forms import SerieForm
 import plotly.graph_objects as go
 from django.shortcuts import render
 from django.db.models import Sum
@@ -23,7 +23,7 @@ def panel_usuario(request):
     return render(request, 'usuarios/panel_usuario.html')
 
 def inicio_personalizado(request):
-    return render(request, 'ClonFlixApp:index.html')
+    return render(request, 'MiFlixApp:index.html')
 
 # ============================
 # Registro de un usuario y Login de un usuario 'No Admin'
@@ -63,7 +63,7 @@ def login_view(request):
                 return redirect('usuarios:panel_admin')  # Redirigir al panel de administración
 
             # Redirigir a la página de inicio para cualquier usuario no administrador
-            return redirect('ClonFlixApp:index')  # Redirigir al inicio como usuario registrado
+            return redirect('MiFlixApp:index')  # Redirigir al inicio como usuario registrado
 
         else:
             messages.error(request, 'Usuario o contraseña incorrectos.')
@@ -188,7 +188,7 @@ def crear_pelicula(request):
         form = PeliculaForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('ClonFlixApp:peliculas')
+            return redirect('MiFlixApp:peliculas')
     else:
         form = PeliculaForm()
     return render(request, 'usuarios/crear_pelicula.html', {'form': form})

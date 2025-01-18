@@ -1,4 +1,4 @@
-{% extends 'clonflixapp/base.html' %}
+{% extends 'MiFlixapp/base.html' %}
 
 {% block content %}
 <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-3xl mx-auto mt-20"> <!-- Ajustado margen superior a mt-20 -->
@@ -10,7 +10,7 @@
     </p>
 
     <p class="text-center mb-6 text-sm md:text-base"> <!-- Texto ajustado para pantallas pequeñas y medianas -->
-        Este es tu panel personal. Como usuario registrado, desde la cabecera de la página, vas a poder marcar y desmarcar tus películas o series y agregarlas a tus favoritas. Tambien vas a poder marcar todo el contenido que vayas viendo, tanto series como peliculas, y agregargas a ya vistas, visualizar estadísticas del tiempo que pasas viendo ClonFlix, los géneros que mas ves y explorar todo el contenido de la web.
+        Este es tu panel personal. Como usuario registrado, desde la cabecera de la página, vas a poder marcar y desmarcar tus películas o series y agregarlas a tus favoritas. Tambien vas a poder marcar todo el contenido que vayas viendo, tanto series como peliculas, y agregargas a ya vistas, visualizar estadísticas del tiempo que pasas viendo MiFlix, los géneros que mas ves y explorar todo el contenido de la web.
     </p>
 
     <!-- Información del panel con más espacio para los textos -->
@@ -47,7 +47,7 @@
 
         <!-- Botón para empezar la aventura -->
         <div class="text-center mt-4"> <!-- Reducido margen superior -->
-            <a href="{% url 'ClonFlixApp:index' %}" class="bg-pink-400 hover:bg-pink-500 text-white font-bold py-3 px-6 rounded-lg text-lg">
+            <a href="{% url 'MiFlixApp:index' %}" class="bg-pink-400 hover:bg-pink-500 text-white font-bold py-3 px-6 rounded-lg text-lg">
                 Empieza tu aventura en MiFlix
             </a>
         </div>

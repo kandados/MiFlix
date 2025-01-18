@@ -1,4 +1,4 @@
-{% extends "ClonFlixApp/base.html" %}
+{% extends "MiFlixApp/base.html" %}
 {% block content %}
 <section class="py-8 px-4">
     <h1 class="text-4xl font-bold text-center mb-6">Contenido Marcado como Visto</h1>
@@ -10,11 +10,11 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {% for pelicula in vistas_peliculas %}
                     <div class="bg-gray-800 text-white rounded-lg overflow-hidden shadow-lg">
-                        <img src="{{ pelicula.pelicula.image_cover.url|default:'{% static "ClonFlixApp/images/default_image.jpg" %}' }}" alt="{{ pelicula.pelicula.titulo }}" class="w-full h-64 object-cover">
+                        <img src="{{ pelicula.pelicula.image_cover.url|default:'{% static "MiFlixApp/images/default_image.jpg" %}' }}" alt="{{ pelicula.pelicula.titulo }}" class="w-full h-64 object-cover">
                         <div class="p-4">
                             <h3 class="text-xl font-bold mb-2">{{ pelicula.pelicula.titulo }}</h3>
                             <p class="text-sm mb-4">{{ pelicula.pelicula.sinopsis|truncatechars:100 }}</p>
-                            <a href="{% url 'ClonFlixApp:detalle_pelicula' pelicula.pelicula.id %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Ver Detalle</a>
+                            <a href="{% url 'MiFlixApp:detalle_pelicula' pelicula.pelicula.id %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Ver Detalle</a>
                         </div>
                     </div>
                 {% endfor %}
@@ -31,11 +31,11 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {% for serie in vistas_series %}
                     <div class="bg-gray-800 text-white rounded-lg overflow-hidden shadow-lg">
-                        <img src="{{ serie.serie.image_cover.url|default:'{% static "ClonFlixApp/images/default_image.jpg" %}' }}" alt="{{ serie.serie.titulo }}" class="w-full h-64 object-cover">
+                        <img src="{{ serie.serie.image_cover.url|default:'{% static "MiFlixApp/images/default_image.jpg" %}' }}" alt="{{ serie.serie.titulo }}" class="w-full h-64 object-cover">
                         <div class="p-4">
                             <h3 class="text-xl font-bold mb-2">{{ serie.serie.titulo }}</h3>
                             <p class="text-sm mb-4">{{ serie.serie.sinopsis|truncatechars:100 }}</p>
-                            <a href="{% url 'ClonFlixApp:detalle_serie' serie.serie.id %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Ver Detalle</a>
+                            <a href="{% url 'MiFlixApp:detalle_serie' serie.serie.id %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Ver Detalle</a>
                         </div>
                     </div>
                 {% endfor %}

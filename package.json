@@ -4,7 +4,7 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15"
   },
-  "name": "clonflix",
+  "name": "MiFlix",
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
@@ -108,7 +108,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:css": "tailwindcss -i ClonFlixApp/static/ClonFlixApp/tailwind.css -o static/css/styles.css"
+    "build:css": "tailwindcss -i MiFlixApp/static/MiFlixApp/tailwind.css -o static/css/styles.css"
   },
   "keywords": [],
   "author": "",

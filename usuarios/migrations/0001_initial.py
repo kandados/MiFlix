@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("ClonFlixApp", "0001_initial"),
+        ("MiFlixApp", "0001_initial"),
         ("auth", "0012_alter_user_first_name_max_length"),
     ]
 
@@ -156,7 +156,7 @@ class Migration(migrations.Migration):
                         blank=True,
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="ClonFlixApp.pelicula",
+                        to="MiFlixApp.pelicula",
                     ),
                 ),
                 (
@@ -165,7 +165,7 @@ class Migration(migrations.Migration):
                         blank=True,
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="ClonFlixApp.serie",
+                        to="MiFlixApp.serie",
                     ),
                 ),
                 (

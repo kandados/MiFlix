@@ -1,4 +1,4 @@
-{% extends "ClonFlixApp/base.html" %}
+{% extends "MiFlixApp/base.html" %}
 {% load static %}
 
 {% block content %}
@@ -7,19 +7,19 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Botón de Gestionar Usuarios -->
         <a href="{% url 'usuarios:gestion_usuarios' %}" class="block bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transform transition duration-300">
-            <img src="{% static 'ClonFlixApp/images/gestion_usuarios.jpg' %}" alt="Gestionar Usuarios" class="w-full h-64 object-cover">
+            <img src="{% static 'MiFlixApp/images/gestion_usuarios.jpg' %}" alt="Gestionar Usuarios" class="w-full h-64 object-cover">
             <h2 class="text-xl font-bold text-center py-4">Gestionar Usuarios</h2>
         </a>
 
         <!-- Botón de Gestionar Contenidos -->
         <a href="{% url 'usuarios:gestion_contenidos' %}" class="block bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transform transition duration-300">
-            <img src="{% static 'ClonFlixApp/images/gestion_contenidos.jpg' %}" alt="Gestionar Contenidos" class="w-full h-64 object-cover">
+            <img src="{% static 'MiFlixApp/images/gestion_contenidos.jpg' %}" alt="Gestionar Contenidos" class="w-full h-64 object-cover">
             <h2 class="text-xl font-bold text-center py-4">Gestionar Contenidos</h2>
         </a>
 
         <!-- Botón de Estadísticas y Gráficas -->
         <a href="{% url 'usuarios:graficas_y_stats' %}" class="block bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transform transition duration-300">
-            <img src="{% static 'ClonFlixApp/images/graficas_y_stats.jpg' %}" alt="Estadísticas y Gráficas" class="w-full h-64 object-cover">
+            <img src="{% static 'MiFlixApp/images/graficas_y_stats.jpg' %}" alt="Estadísticas y Gráficas" class="w-full h-64 object-cover">
             <h2 class="text-xl font-bold text-center py-4">Estadísticas y Gráficas</h2>
         </a>
     </div>

@@ -1,0 +1,143 @@
+{% extends "MiFlixApp/base.html" %}
+{% load static %}
+{% block content %}
+<section class="py-8 px-4 mt-32">
+    <!-- Botón volver -->
+    <div class="flex justify-center mb-4">
+        <button onclick="history.back()" class="bg-gray-700 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded">
+            Volver
+        </button>
+    </div>
+
+    <div class="max-w-4xl mx-auto bg-gray-800 text-white rounded-lg p-6 flex flex-col md:flex-row gap-6">
+        <!-- Imagen de la película -->
+        <div class="flex-shrink-0">
+            {% if pelicula.image_cover %}
+                <img src="{{ pelicula.image_cover.url }}" alt="{{ pelicula.titulo }}" class="w-full md:w-80 h-auto rounded-lg">
+            {% else %}
+                <img src="{% static 'MiFlixApp/images/default_image.jpg' %}" alt="Imagen no disponible" class="w-full md:w-80 h-auto rounded-lg">
+            {% endif %}
+        </div>
+
+        <!-- Información de la película -->
+        <div class="flex-grow">
+            <h1 class="text-4xl font-bold mb-4">{{ pelicula.titulo }}</h1>
+
+            <!-- Sinopsis -->
+            <div class="mb-6">
+                <h2 class="text-2xl font-semibold mb-2">Sinopsis</h2>
+                <p>{{ pelicula.sinopsis }}</p>
+            </div>
+
+            <!-- Si el usuario está logueado, mosatramos detalles y botones -->
+            {% if user.is_authenticated %}
+                <div>
+                    <h2 class="text-2xl font-semibold mb-2">Detalles</h2>
+                    <p><strong>Género:</strong> {{ pelicula.genero }}</p>
+                    <p><strong>Duración:</strong> {{ pelicula.duracion }} minutos</p>
+                    <p><strong>Director:</strong> {{ pelicula.director }}</p>
+                    <p><strong>Actores Principales:</strong> {{ pelicula.protagonistas }}</p>
+                    <p><strong>Año de estreno:</strong> {{ pelicula.estreno }}</p>
+                    <p><strong>Vistas Totales:</strong> {{ pelicula.vistas_totales }}</p>
+
+                    <!-- Calificaciones -->
+                    <p><strong>Calificación Promedio:</strong>
+                        {% if promedio_calificacion %}
+                            {{ promedio_calificacion }} / 10
+                        {% else %}
+                            No calificada aún
+                        {% endif %}
+                    </p>
+                    <p><strong>Tu Calificación:</strong>
+                        {% if tu_calificacion %}
+                            {{ tu_calificacion }} / 10
+                        {% else %}
+                            No has calificado esta película aún
+                        {% endif %}
+                    </p>
+                </div>
+
+                <!-- Botones de interacción -->
+                <div class="mt-6 flex gap-4">
+                    <!-- Marcar como Favorito -->
+                    <form action="{% url 'usuarios:marcar_favorito' pelicula.id 'pelicula' %}" method="post" onsubmit="return manejarFormulario(this);">
+                        {% csrf_token %}
+                        <button type="submit" class="{% if es_favorito %}bg-gray-300 hover:bg-gray-400 text-gray-800{% else %}bg-blue-500 hover:bg-blue-700 text-white{% endif %} font-bold py-2 px-4 rounded button-fixed-width">
+                            {% if es_favorito %}Quitar de Favoritos{% else %}Agregar a Favoritos{% endif %}
+                        </button>
+                    </form>
+
+                    <!-- Marcar como Visto -->
+                    <form action="{% url 'usuarios:marcar_como_visto' pelicula.id 'pelicula' %}" method="post" onsubmit="return manejarFormulario(this);">
+                        {% csrf_token %}
+                        <button type="submit" class="{% if es_visto %}bg-gray-300 hover:bg-gray-400 text-gray-800{% else %}bg-green-500 hover:bg-green-700 text-white{% endif %} font-bold py-2 px-4 rounded button-fixed-width">
+                            {% if es_visto %}Quitar de Vistas{% else %}Marcar como Visto{% endif %}
+                        </button>
+                    </form>
+
+                    <!-- Botón para Calificar -->
+                    <button onclick="openModal()" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded button-fixed-width">
+                        {% if ya_calificado %}Cambiar Calificación{% else %}Calificar{% endif %}
+                    </button>
+                </div>
+            {% else %}
+                <!-- Mensaje para usuarios no logueados -->
+                <p class="text-yellow-400">Inicia sesión para acceder a los detalles completos de la película y usar todas las funcionalidades.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Ventana modal para calificar -->
+<div id="calificarModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-gray-800 text-white p-6 rounded shadow-lg w-96">
+        <h2 class="text-xl font-semibold mb-4">Calificar</h2>
+        <form method="POST" action="{% url 'MiFlixApp:calificar_contenido' pelicula.id 'pelicula' %}">
+            {% csrf_token %}
+            {% if ya_calificado %}
+                <p class="text-yellow-400 mb-4">Ya has calificado esta película. ¿Quieres cambiar tu calificación?</p>
+            {% endif %}
+            <label for="calificacion" class="block text-white font-bold mb-2">Escribe tu calificación del 1 al 10:</label>
+            <input type="number" name="calificacion" id="calificacion" min="1" max="10" class="w-full bg-gray-700 text-white border-gray-600 rounded-lg p-2" placeholder="Califica del 1 al 10" required>
+            <div class="mt-4 flex justify-end">
+                <button type="button" class="bg-gray-600 text-white px-4 py-2 rounded mr-2 hover:bg-gray-500" onclick="closeModal()">Cancelar</button>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    async function manejarFormulario(formulario) {
+        event.preventDefault();
+
+        try {
+            const respuesta = await fetch(formulario.action, {
+                method: formulario.method,
+                body: new FormData(formulario),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            if (respuesta.ok) {
+                location.reload();
+            } else {
+                console.error("Error al procesar el formulario.");
+            }
+        } catch (error) {
+            console.error("Error de red:", error);
+        }
+
+        return false;
+    }
+
+    function openModal() {
+        document.getElementById('calificarModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('calificarModal').classList.add('hidden');
+    }
+</script>
+{% endblock %}

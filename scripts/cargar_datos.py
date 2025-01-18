@@ -1,5 +1,5 @@
 import csv
-from ClonFlixApp.models import Pelicula, Serie
+from MiFlixApp.models import Pelicula, Serie
 
 def cargar_peliculas():
     try:
