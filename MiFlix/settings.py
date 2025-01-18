@@ -20,7 +20,8 @@ ALLOWED_HOSTS = ['violent-flossie-kandados-48df4464.koyeb.app',
                  '127.0.0.1',
                  'localhost',
                  '0.0.0.0',
-                 '192.168.1.69'
+                 '192.168.1.69',
+                 '217.160.22.236'
                  ]
 
 # Application definition
