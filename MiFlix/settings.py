@@ -10,18 +10,18 @@ SECRET_KEY = "django-insecure-&8o%-b4ml$znrgg#=)&329fp^alx(u8nkk7pi_6o%zq8uo!i-_
 DEBUG = True
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://violent-flossie-kandados-48df4464.koyeb.app',
+    'https://violent-flossie-kandados-48df4464.koyeb.app', # direccion del proyecto alojado con docker en koyeb para probar
 ]
 
 '''hay una copia de mi proyecto alojado en un docker y posteriormente subido
  a koyeb para probarlo en internet y otra copia en un vps mio personal alojado en arsys'''
 
-ALLOWED_HOSTS = ['violent-flossie-kandados-48df4464.koyeb.app',
+ALLOWED_HOSTS = ['violent-flossie-kandados-48df4464.koyeb.app', # Direccion de una copia del proyecto alojada mediante un contenedor docker en koyeb.
                  '127.0.0.1',
                  'localhost',
                  '0.0.0.0',
                  '192.168.1.69',
-                 '217.160.22.236'
+                 '217.160.22.236' # direccion ip de mi servidor vps de Arsys donde tengo alojada una copia del proyecto para probar
                  ]
 
 # Application definition
@@ -32,10 +32,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django_extensions",  # Herramientas de desarrollo
+    "django_extensions",  # Herramientas de desarrollo Django
     # Aplicaciones del proyecto
-    'MiFlixApp',
-    'usuarios',
+    'MiFlixApp', # Aplicación principal para la gestión del contenido
+    'usuarios',  # Aplicación principal para la gestion de usuarios
 ]
 
 AUTH_USER_MODEL = 'usuarios.Usuario'
@@ -70,7 +70,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "MiFlix.wsgi.application"
 
-# Database
+# Base de datos
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -78,7 +78,7 @@ DATABASES = {
     }
 }
 
-# Password validation
+# Validaciones de contraseña
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -86,16 +86,16 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# Internationalization
-LANGUAGE_CODE = "en-us"
+# Internacionalización
+LANGUAGE_CODE = "es-es"  # Idioma español (España)
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Madrid"  # Zona horaria de España peninsular
 
-USE_I18N = True
+USE_I18N = True  # Habilitar internacionalización
+SE_L10N = True  # Usar configuraciones de localización
+USE_TZ = True  # Habilitar soporte para zonas horarias
 
-USE_TZ = True
-
-# Static files (CSS, JavaScript, Images)
+# Archivos estáticos (CSS, JavaScript, Images)
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
@@ -105,9 +105,9 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Default primary key field type
+# Clave primaria por defecto para los campos
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Login and logout redirects
+# Login y logout redireciones
 LOGIN_REDIRECT_URL = 'MiFlixApp:index'
 LOGOUT_REDIRECT_URL = 'MiFlixApp:index'

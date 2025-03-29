@@ -7,7 +7,7 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
-            <!-- Mostrar los errores del formulario, si existen -->
+            <!-- Muestra los errores del formulario, si existen -->
             {% if form.errors %}
                 <div class="bg-red-500 text-white rounded-lg p-4 mb-4">
                     <ul>
@@ -20,7 +20,7 @@
                 </div>
             {% endif %}
 
-            <!-- Renderizar el formulario con estilos personalizados -->
+            <!-- Renderiza el formulario con estilos personalizados -->
             {{ form.non_field_errors }}
             <div class="space-y-6">
                 {% for field in form.visible_fields %}

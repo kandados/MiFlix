@@ -2,7 +2,7 @@
 {% block content %}
 <section class="py-8 px-4 mt-32">
     <h1 class="text-4xl font-bold text-center mb-8">Eliminar Serie</h1>
-    <p class="text-white text-center mb-4">¿Estás seguro de que quieres eliminar la serie "{{ serie.titulo }}"?</p>
+    <p class="text-white text-center mb-4">¿Seguro que quieres eliminar la serie "{{ serie.titulo }}"?</p>
     <form method="post" class="text-center">
         {% csrf_token %}
         <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Eliminar</button>

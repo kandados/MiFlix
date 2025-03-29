@@ -1,8 +1,8 @@
 {% extends "MiFlixApp/base.html" %}
 
 {% block content %}
-<section class="py-8 px-4 mt-32 flex justify-center"> <!-- Añadido mt-32 para ajustar margen -->
-    <div class="max-w-2xl w-full bg-gray-800 p-6 rounded"> <!-- Cambiado a max-w-2xl para mayor ancho -->
+<section class="py-8 px-4 mt-32 flex justify-center">
+    <div class="max-w-2xl w-full bg-gray-800 p-6 rounded">
         <h2 class="text-2xl font-bold mb-4 text-center">Iniciar sesión</h2>
         <form method="post" action="{% url 'usuarios:login' %}">
             {% csrf_token %}

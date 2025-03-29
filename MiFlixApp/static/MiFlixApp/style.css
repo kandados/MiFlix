@@ -14,7 +14,7 @@
     background: none; /* Sin fondo */
     border: none; /* Sin bordes */
     display: inline-block; /* Asegura que el ícono se muestra correctamente */
-    width: 50px; /* Ajusta el tamaño según lo necesites */
+    width: 50px; /* Ajusta el tamaño según se necesita */
     height: 50px;
     cursor: pointer; /* Para indicar que es clicable */
 }
@@ -72,7 +72,7 @@
     background-color: #6a4c93;
 }
 
-/* Fondo de cuadrícula sutil */
+/* Fondo de cuadrícula  */
 body {
     background-color: #111; /* Fondo oscuro */
     background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
@@ -85,20 +85,20 @@ body {
 }
 
 header {
-    background-color: #202020; /* Color aproximado al de tu captura */
+    background-color: #202020; /* Color */
 }
 
 footer {
-    background-color: #202020; /* Color aproximado al de tu captura */
+    background-color: #202020; /* Color */
 }
 
 
 /* Clase para fijar el ancho de los botones */
 .button-fixed-width {
-    width: 150px; /* Ajusta este valor según tus necesidades */
+    width: 150px; /* valor ajustable según necesitemos */
     text-align: center;
     display: inline-block; /* Asegura que el texto quede alineado */
-    padding: 10px; /* Ajusta el espacio interno para mayor comodidad */
+    padding: 10px; /* Ajusta el espacio interno  */
     border-radius: 5px; /* Bordes redondeados para consistencia */
     font-weight: bold; /* Fuente en negrita para los botones */
 }

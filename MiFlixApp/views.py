@@ -1,17 +1,11 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
-from MiFlixApp.models import Pelicula, Serie  # Asegúrate de tener UsuarioContenido definido en tus modelos
-from unidecode import unidecode
-from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg
-from usuarios.models import UsuarioPelicula, UsuarioContenido
-from MiFlixApp.models import Pelicula
-from usuarios.models import UsuarioContenido
-from django.db.models import Avg
-from django.db.models import Count
-from usuarios.models import UsuarioPelicula, UsuarioSerie
+from django.db.models import Avg, Q
+from unidecode import unidecode
+from usuarios.models import UsuarioPelicula, UsuarioContenido, UsuarioSerie
+from MiFlixApp.models import Pelicula, Serie
+
 
 
 # Para el video de la pagina de inicio
@@ -21,8 +15,6 @@ def video_page(request):
     return render(request, 'video.html', {'video_url': video_url})
 
 
-from django.shortcuts import render, get_object_or_404
-from MiFlixApp.models import Pelicula, Serie
 
 # Página principal
 def index(request):
@@ -78,17 +70,52 @@ def series_recientes(request):
 
 
 # Búsqueda de contenido
+
 def buscar_contenido(request):
-    query = request.GET.get('q', '').strip()
+    query = request.GET.get('q', '').strip()  # Obtiene la consulta
+    peliculas = Pelicula.objects.none()
+    series = Serie.objects.none()
 
     if query:
+        # Normaliza la consulta (sin tildes y en minúsculas)
         normalized_query = unidecode(query).lower()
-        peliculas = Pelicula.objects.filter(titulo__icontains=normalized_query)
-        series = Serie.objects.filter(titulo__icontains=normalized_query)
-    else:
-        peliculas = Pelicula.objects.none()
-        series = Serie.objects.none()
 
+        # Buscar por ID con el prefijo 'id'
+        if normalized_query.startswith('id') and normalized_query[2:].isdigit():
+            # Extraer el número después de 'id'
+            id_number = normalized_query[2:]
+            peliculas = Pelicula.objects.filter(
+                Q(id=id_number)
+            ).distinct()
+            series = Serie.objects.filter(
+                Q(id=id_number)
+            ).distinct()
+
+        # Buscar por año exacto (4 cifras)
+        elif normalized_query.isdigit() and len(normalized_query) == 4:
+            peliculas = Pelicula.objects.filter(
+                Q(estreno=int(normalized_query))
+            ).distinct()
+            series = Serie.objects.filter(
+                Q(estreno=int(normalized_query))
+            ).distinct()
+
+        # Búsqueda general para texto
+        else:
+            peliculas = Pelicula.objects.filter(
+                Q(titulo__icontains=normalized_query) |
+                Q(genero__icontains=normalized_query) |
+                Q(director__icontains=normalized_query) |
+                Q(protagonistas__icontains=normalized_query)
+            ).distinct()
+            series = Serie.objects.filter(
+                Q(titulo__icontains=normalized_query) |
+                Q(genero__icontains=normalized_query) |
+                Q(director__icontains=normalized_query) |
+                Q(protagonistas__icontains=normalized_query)
+            ).distinct()
+
+    # Si no hay resultados
     sin_resultados = not (peliculas.exists() or series.exists())
 
     return render(request, 'MiFlixApp/buscar_resultados.html', {
@@ -100,8 +127,6 @@ def buscar_contenido(request):
 
 
 # Detalle de contenido
-
-
 
 def detalle_pelicula(request, id):
     pelicula = get_object_or_404(Pelicula, id=id)
@@ -164,7 +189,7 @@ def detalle_serie(request, id):
             tu_calificacion = usuario_contenido.calificacion
             es_favorito = usuario_contenido.favorito
             es_visto = usuario_contenido.visto
-            ya_calificado = usuario_contenido.calificacion is not None  # Verificar si ya calificó
+            ya_calificado = usuario_contenido.calificacion is not None  # Verificar si ya se calificó
 
     return render(request, 'MiFlixApp/detalle_serie.html', {
         'serie': serie,
@@ -234,5 +259,5 @@ def calificar_contenido(request, contenido_id, tipo):
         # Redirigir a la página previa
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
-    # Si no es un método POST, redirigir a la página de detalle
+  #Si no es un método POST, redirigir a la página de detalle
     return redirect('MiFlixApp:detalle_pelicula' if tipo == 'pelicula' else 'MiFlixApp:detalle_serie', id=contenido_id)

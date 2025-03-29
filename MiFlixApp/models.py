@@ -8,7 +8,7 @@ class Pelicula(models.Model):
     genero = models.CharField(max_length=100, blank=True, null=True)
     director = models.CharField(max_length=255, blank=True, null=True)
     protagonistas = models.TextField(blank=True, null=True)
-    duracion = models.IntegerField(blank=True, null=True)  # En minutos
+    duracion = models.IntegerField(blank=True, null=True)  # En minutos (100, 90, 150 etc.)
     calificacion_usuario = models.IntegerField(blank=True, default=0)
     vistas_totales = models.IntegerField(default=0)
     image_cover = models.ImageField(upload_to='movie_images/', blank=True, null=True)

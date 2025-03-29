@@ -6,7 +6,7 @@ from django.utils.timezone import now
 
 
 class Usuario(AbstractUser):
-    """Modelo extendido de usuario para incluir roles y correo electrónico único."""
+    # Modelo extendido de usuario para incluir roles y correo electrónico único.
     ADMIN = 'ADMIN'
     CLIENT = 'CLIENT'
     ROLE_CHOICES = [
@@ -14,7 +14,7 @@ class Usuario(AbstractUser):
         (CLIENT, 'Cliente'),
         ('USER', 'USUARIO'),
     ]
-    is_first_login = models.BooleanField(default=True)  # Campo que indica si es el primer login
+    is_first_login = models.BooleanField(default=True)  # Este campo indica si es el primer login
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=CLIENT)
     email = models.EmailField(unique=True)
 
@@ -55,8 +55,8 @@ class Calificacion(models.Model):
 
     def __str__(self):
         if self.pelicula:
-            return f"{self.usuario.username} calificó {self.pelicula.titulo} con {self.calificacion} estrellas"
-        return f"{self.usuario.username} calificó {self.serie.titulo} con {self.calificacion} estrellas"
+            return f"{self.usuario.username} calificó {self.pelicula.titulo} con {self.calificacion} puntos"
+        return f"{self.usuario.username} calificó {self.serie.titulo} con {self.calificacion} puntos"
 
 
 class UsuarioPelicula(models.Model):

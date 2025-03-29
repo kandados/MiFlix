@@ -1,20 +1,20 @@
 {% extends 'MiFlixapp/base.html' %}
 
 {% block content %}
-<div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-3xl mx-auto mt-20"> <!-- Ajustado margen superior a mt-20 -->
+<div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-3xl mx-auto mt-20">
     <h2 class="text-center text-3xl font-bold mb-4">Panel de Usuario</h2>
 
     <!-- Texto de bienvenida -->
-    <p class="text-center text-4xl font-bold mb-4"> <!-- Ajustado tamaño del texto a text-4xl -->
-        Bienvenido, <span class="text-pink-400">{{ user.username }}</span>!
+    <p class="text-center text-4xl font-bold mb-4">
+        Bienvenido/a, <span class="text-pink-400">{{ user.username }}</span>!
     </p>
 
     <p class="text-center mb-6 text-sm md:text-base"> <!-- Texto ajustado para pantallas pequeñas y medianas -->
-        Este es tu panel personal. Como usuario registrado, desde la cabecera de la página, vas a poder marcar y desmarcar tus películas o series y agregarlas a tus favoritas. Tambien vas a poder marcar todo el contenido que vayas viendo, tanto series como peliculas, y agregargas a ya vistas, visualizar estadísticas del tiempo que pasas viendo MiFlix, los géneros que mas ves y explorar todo el contenido de la web.
+        Este es tu panel personal. Como usuario/a registrado/a, desde la cabecera de la página, vas a poder marcar y desmarcar tus películas o series y agregarlas a tus favoritas. Tambien vas a poder marcar todo el contenido que vayas viendo, tanto series como peliculas, y agregarlas a ya vistas, visualizar estadísticas del tiempo que pasas viendo MiFlix, los géneros que mas ves y explorar todo el contenido de la web.
     </p>
 
-    <!-- Información del panel con más espacio para los textos -->
-    <div class="space-y-4"> <!-- Reducido espacio entre secciones -->
+
+    <div class="space-y-4">
         <!-- Nuevo apartado para Series -->
         <div class="bg-gray-700 p-4 rounded-lg text-center h-auto max-w-xl mx-auto">
             <h3 class="text-lg font-semibold mb-2">Series</h3>

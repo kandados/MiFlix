@@ -43,7 +43,7 @@
 
         /* Ajustamos dinamicamente el margen para algunas paginas  */
         .adjusted-content {
-            margin-top: 7rem; /* Ajusta este valor según sea necesario */
+            margin-top: 7rem; /* Ajustamos este valor según sea necesario */
         }
 
         /* aqui damos el tamaño de la caja de texto del buscador */
@@ -73,7 +73,7 @@
                 <img src="{% static 'MiFlixApp/images/logo.png' %}" alt="Logo MiFlix" class="h-36">
             </a>
 
-        <!-- Botón menú hamburguesa -->
+        <!-- Botón menú hamburguesa si queremos probar a abrir en dispositivo movil (falta depurarlo)-->
 <button id="menu-toggle" aria-label="Abrir menú" class="md:hidden text-white focus:outline-none focus:ring-2 focus:ring-pink-500 rounded">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -86,9 +86,9 @@
                 <a href="{% url 'MiFlixApp:series' %}" class="hover:text-pink-300">Series</a>
                 <a href="{% url 'MiFlixApp:peliculas' %}" class="hover:text-pink-300">Películas</a>
                 {% if user.is_authenticated %}
-                    <a href="{% url 'usuarios:favoritos' %}" class="hover:text-pink-300">Favoritos</a>
-                    <a href="{% url 'usuarios:ya_vistas' %}" class="hover:text-pink-300">Ya Vistas</a>
-                    <a href="{% url 'usuarios:estadisticas_usuario' %}" class="hover:text-pink-300">Tus Estadísticas</a>
+                    <a href="{% url 'usuarios:favoritos' %}" class="hover:text-pink-300">Favoritas</a>
+                    <a href="{% url 'usuarios:ya_vistas' %}" class="hover:text-pink-300">Vistas</a>
+                    <a href="{% url 'usuarios:estadisticas_usuario' %}" class="hover:text-pink-300">Mis Estadísticas</a>
                 {% endif %}
                 <a href="{% url 'MiFlixApp:novedades_mas_vistas' %}" class="hover:text-pink-300">Novedades Más Vistas</a>
             </nav>
@@ -109,7 +109,7 @@
             <!-- Usuario -->
             <div class="hidden md:flex flex-col items-end space-y-2">
                 {% if user.is_authenticated %}
-                    <span class="text-green-500 font-semibold">Bienvenido, {{ user.username }}!</span>
+                    <span class="text-green-500 font-semibold">Bienvenido/a, {{ user.username }}!</span>
                     <form action="{% url 'usuarios:logout' %}" method="post" class="inline">
                         {% csrf_token %}
                         <button type="submit" class="bg-pink-400 hover:bg-pink-500 text-white font-bold py-1 px-2 rounded">
@@ -143,12 +143,12 @@
         <!-- Logo -->
         <img src="{% static 'MiFlixApp/images/logo.png' %}" alt="Logo MiFlix" class="h-16">
         <!-- Texto del pie -->
-        <span>© 2024 <span class="highlight">MiFlix</span> | <span class="highlight">kandados@gmail.com</span> | Todos los derechos reservados.</span>
+        <span>© 2025 <span class="highlight">MiFlix</span> | <span class="highlight">kandados@gmail.com</span> | Todos los derechos reservados.</span>
     </div>
 </footer>
 
 
-    <!-- script para el comoortamiento del menu -->
+    <!-- script para el comoportamiento del menu -->
     <script>
         document.getElementById('menu-toggle').addEventListener('click', function () {
             const mobileMenu = document.getElementById('menu');

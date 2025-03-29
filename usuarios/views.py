@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -11,7 +11,6 @@ from MiFlixApp.forms import SerieForm
 import plotly.graph_objects as go
 from django.shortcuts import render
 from django.db.models import Sum
-
 from usuarios.models import UsuarioSerie, UsuarioPelicula
 
 
@@ -25,26 +24,35 @@ def panel_usuario(request):
 def inicio_personalizado(request):
     return render(request, 'MiFlixApp:index.html')
 
-# ============================
-# Registro de un usuario y Login de un usuario 'No Admin'
-# ============================
+# ======================================================== #
+# Registro de un usuario y Login de un usuario 'No Admin'  #
+# ======================================================== #
 
-# Registro de usuarios
 def registro(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         email = request.POST['email']
+
+        # Verificar si el nombre de usuario ya existe
         if Usuario.objects.filter(username=username).exists():
-            messages.error(request, 'El nombre de usuario ya está en uso.')
+            messages.error(request, 'El nombre de usuario ya existe, utiliza otro nombre.')
             return redirect('usuarios:registro')
+
+        # Verificar si el email ya está registrado
+        if Usuario.objects.filter(email=email).exists():
+            messages.error(request, 'El email ya existe, utiliza otro diferente.')
+            return redirect('usuarios:registro')
+
         try:
             user = Usuario.objects.create_user(username=username, email=email, password=password)
             login(request, user)
-            messages.success(request, 'Registro exitoso.')
-            return redirect('usuarios:panel_usuario')  # Redirigir al panel de usuario
+            messages.success(request, 'Registrado con éxito.')
+            return redirect('usuarios:panel_usuario')  # Redirige al panel de usuario
         except Exception as e:
             messages.error(request, f'Error: {str(e)}')
+            return redirect('usuarios:registro')
+
     return render(request, 'usuarios/registro.html')
 
 
@@ -163,7 +171,7 @@ def eliminar_usuario(request, user_id):
 @login_required
 @user_passes_test(es_administrador)
 def gestion_contenidos(request):
-    # Capturar el término de búsqueda desde los parámetros GET
+    # Capturar el término de búsqueda
     query = request.GET.get('q', '').strip()
 
     # Obtener todas las películas y series
@@ -216,7 +224,7 @@ def editar_pelicula(request, pelicula_id):
         form = PeliculaForm(request.POST, request.FILES, instance=pelicula)
         if form.is_valid():
             form.save()
-            return redirect('usuarios:gestion_contenidos')  # Ajusta la redirección según tu proyecto
+            return redirect('usuarios:gestion_contenidos')  # Redirige a la gestion de contenidos
     else:
         # Cargar el formulario con los datos de la película
         form = PeliculaForm(instance=pelicula)
@@ -248,7 +256,7 @@ def editar_serie(request, serie_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Serie actualizada exitosamente.')
-            return redirect('usuarios:gestion_contenidos')  # Ajusta la redirección según tu proyecto
+            return redirect('usuarios:gestion_contenidos')
     else:
         # Cargar el formulario con los datos actuales de la serie
         form = SerieForm(instance=serie)
@@ -267,9 +275,9 @@ def eliminar_serie(request, serie_id):
 
 
 
-# ============================
-# Favoritos, calificar, Ya Vistas y estadisticas Usuario Logueado
-# ============================
+# =============================================================== #
+# Favoritos, calificar, Ya Vistas y estadisticas Usuario Logueado #
+# =============================================================== #
 @login_required
 def favoritas_view(request):
     favoritos_peliculas = UsuarioContenido.objects.filter(usuario=request.user, favorito=True, pelicula__isnull=False)
@@ -318,11 +326,11 @@ def marcar_como_visto(request, contenido_id, tipo):
         messages.error(request, 'Tipo de contenido no válido.')
         return redirect('usuarios:ya_vistas')
 
-    # Obtén el contenido según el tipo
+    # obtenemos el contenido según el tipo
     modelo = Pelicula if tipo == 'pelicula' else Serie
     contenido = get_object_or_404(modelo, id=contenido_id)
 
-    # Crea o actualiza el registro en UsuarioContenido
+    # Creamos o actualizamos el registro en UsuarioContenido
     usuario_contenido, created = UsuarioContenido.objects.get_or_create(
         usuario=request.user,
         pelicula=contenido if tipo == 'pelicula' else None,
@@ -413,7 +421,7 @@ def estadisticas_usuario(request):
     )])
     fig_series_generos.update_layout(layout_estilo, title="Distribución de Géneros en Series")
 
-    # Convertir gráficos a HTML
+    # Convertir gráficos a html
     chart_peliculas_tiempo = fig_peliculas_tiempo.to_html(full_html=False)
     chart_series_tiempo = fig_series_tiempo.to_html(full_html=False)
     chart_peliculas_generos = fig_peliculas_generos.to_html(full_html=False)
@@ -592,8 +600,8 @@ def estadisticas_usuario_admin(request, usuario_id):
         plot_bgcolor='rgba(31, 41, 55, 1)',   # Fondo del área de la gráfica
         font=dict(color="white"),            # Texto blanco
         title_font=dict(size=16, color="white"),  # Títulos más pequeños
-        height=300,  # Altura compacta
-        width=400,   # Ancho compacto
+        height=300,
+        width=400,
     )
 
     # Gráfica 1: Tiempo en Películas

@@ -29,7 +29,7 @@
                 <p>{{ pelicula.sinopsis }}</p>
             </div>
 
-            <!-- Si el usuario está logueado, mosatramos detalles y botones -->
+            <!-- Si el usuario está logueado, mostramos detalles y botones -->
             {% if user.is_authenticated %}
                 <div>
                     <h2 class="text-2xl font-semibold mb-2">Detalles</h2>
@@ -52,7 +52,7 @@
                         {% if tu_calificacion %}
                             {{ tu_calificacion }} / 10
                         {% else %}
-                            No has calificado esta película aún
+                            Todavía no has calificado esta película
                         {% endif %}
                     </p>
                 </div>
